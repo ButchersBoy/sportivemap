@@ -1,9 +1,11 @@
 'option strict'
 
 var fs = require("fs");
-var request = require("request");
 var readline = require('readline');
 var jsdom = require("jsdom");
+var request = require("request");
+var Promise = require("bluebird");
+Promise.promisifyAll(require("request"));
 
 console.log('here we go');
 
@@ -13,7 +15,6 @@ var rl = readline.createInterface({
 });
 
 var jquery = fs.readFileSync("./bin/jquery.js", "utf-8");
-
 
 /*
 var requestOptions = {
@@ -101,26 +102,71 @@ Event.prototype.toJSON = function() {
 	});
 }
 
-
-
-function readJSON(filename){
-  return new Promise(function (fulfill, reject){
-    readFile(filename, 'utf8').done(function (res){
-      try {
-        fulfill(JSON.parse(res));
-      } catch (ex) {
-        reject(ex);
-      }
-    }, reject);
-  });
-}
+var requestPromise = Promise.method(function(url) {
+	console.log("get " + url);
+	return request.getAsync(indexerRootUrl + a.href).then(response) {
+		console.log("received " + url);
+	};
+});
 
 
 function parseUkCyclingEvents(window, indexerRootUrl) {
-	var pages = window.$("ul.thumbnails:first a").map(function(index, a) {
-		return (indexerRootUrl + a.href);
+	var promises = window.$.makeArray(window.$("ul.thumbnails:first a").map(function(index, a) {		
+		return requestPromise();
+	}));
+
+	Promise.each(promises, function(item, index, length) {
+		parseUkCyclingEvent(item.body, item.request.uri.href);
 	});
-	console.log(pages[0]);
+
+	/*
+	var promises = window.$.makeArray(window.$("ul.thumbnails:first a").map(function(index, a) {		
+		return (request.getAsync(indexerRootUrl + a.href));
+	}));
+
+
+	Promise.all(promises).then(values =>
+	{
+		for (var i = 0; i < values.length; i++) {
+			parseUkCyclingEvent(values[i].body, values[i].request.uri.href);
+		};				
+	});
+	*/	
+}
+
+function parseUkCyclingEvent(html, sourceUrl) {
+	jsdom.env({
+		html : html,
+		src : [jquery],			
+		done : function (err, window) {
+			if (err)
+				console.log(err)
+			else			
+			{	
+				var name = window.$("body>div:nth-child(4)>div:nth-child(3)>div:nth-child(1)>div:nth-child(1)>div:nth-child(1)>h3").text().clean();
+				var event;
+				if (name != "")
+				{
+					event = new Event(
+						name,
+						window.$('dl.event-details dt:contains("Date") ~ dd:first').text().clean(),
+						"Road",
+						window.$('dl.event-details dt:contains("Venue") ~ dd:first').text().clean(),
+						sourceUrl
+						);
+
+					console.log(event.toJSON());
+				}
+				else
+				{
+					console.log("Cannot scrape " + sourceUrl);
+
+				}				
+
+				//console.log(event.toJSON());
+			}
+		}
+	});   					
 }
 
 function parseBritishCycling(window, indexerUrlPrefix)
