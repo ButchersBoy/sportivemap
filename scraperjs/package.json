@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "jsdom": "^8.0.4"
+    "jsdom": "^8.0.4",
+    "request": "^2.69.0"
   }
 }
