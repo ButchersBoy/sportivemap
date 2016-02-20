@@ -40,17 +40,19 @@ function manageUkCyclingEvents(allEvents, then)  {
 }
 
 function handleEndResult(allEvents) {
-	console.log("END"  + allEvents.length);	
+	console.log("END "  + allEvents.length);	
+	fs.writeFileSync('dataraw.js', JSON.stringify(allEvents), 'utf8');
 }
 
-function Event(name, date, kind, locationSummary, indexerUrl) {
+function Event(name, dateSummary, kind, locationSummary, indexerUrl) {
 	this.name = name;
-	this.date = date;
+	this.dateSummary = dateSummary;
 	this.kind = kind;
 	this.locationSummary = locationSummary;
 	this.indexerUrl = indexerUrl;
 }
-Event.prototype.toJSON = function() {
+
+Event.prototype.toJSON__ = function() {
 	return JSON.stringify({
 		name : this.name,
 		date : this.date,
