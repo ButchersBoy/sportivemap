@@ -104,20 +104,23 @@ Event.prototype.toJSON = function() {
 
 var requestPromise = Promise.method(function(url) {
 	console.log("get " + url);
-	return request.getAsync(indexerRootUrl + a.href).then(response) {
+	return request.getAsync(url).then(function(response) {
 		console.log("received " + url);
-	};
+		return response;
+	});
 });
 
 
 function parseUkCyclingEvents(window, indexerRootUrl) {
-	var promises = window.$.makeArray(window.$("ul.thumbnails:first a").map(function(index, a) {		
-		return requestPromise();
+	var urls = window.$.makeArray(window.$("ul.thumbnails:first a").map(function(index, a) {		
+		return (indexerRootUrl + a.href);
 	}));
 
-	Promise.each(promises, function(item, index, length) {
-		parseUkCyclingEvent(item.body, item.request.uri.href);
-	});
+	fetxhNextUkCyclingEvent(urls);
+
+	//Promise.each(promises, function(item, index, length) {
+	//	parseUkCyclingEvent(item.body, item.request.uri.href);
+	//});
 
 	/*
 	var promises = window.$.makeArray(window.$("ul.thumbnails:first a").map(function(index, a) {		
@@ -132,6 +135,16 @@ function parseUkCyclingEvents(window, indexerRootUrl) {
 		};				
 	});
 	*/	
+}
+
+function fetxhNextUkCyclingEvent(urls) {
+	var url = urls.pop();
+	if (url == undefined) return;
+
+	requestPromise(url).then(function(response) {
+		parseUkCyclingEvent(response.body, url);
+		fetxhNextUkCyclingEvent(urls);
+	});
 }
 
 function parseUkCyclingEvent(html, sourceUrl) {
