@@ -7,83 +7,41 @@ var request = require("request");
 var Promise = require("bluebird");
 Promise.promisifyAll(require("request"));
 
-console.log('here we go');
-
-var rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
-});
+String.prototype.clean = function() {
+	return this.trim().replace('/r', '/');
+}
 
 var jquery = fs.readFileSync("./bin/jquery.js", "utf-8");
 
-/*
-var requestOptions = {
-    url: 'https://www.britishcycling.org.uk/events?search_type=upcomingevents&zuv_bc_event_filter_id[]=5&resultsperpage=1000', 
-    method: "GET",     
-    //proxy: 'http://917753:AliceW_1@ncproxy1:8080',
-    json: false
-};
+var allEvents = new Array();
 
-request(requestOptions, function (error, response, body) {
-	if (!error && response.statusCode == 200) {
+function manageUkCyclingEvents(allEvents, then)  {
+	request
+		.getAsync('http://www.ukcyclingevents.co.uk/events/category/road')
+		.then(function(response){
+			jsdom.env({
+						html : response.body,
+						src : [jquery],			
+						done : function (err, window) {
+							if (err)
+								console.log(err)
+							else
+							{
+								console.log("Running UK Cycling...");
+								var urls = window.$.makeArray(window.$("ul.thumbnails:first a").map(function(index, a) {		
+									return ('http://www.ukcyclingevents.co.uk' + a.href);
+								}));
 
-		jsdom.env({
-			html : body,
-			src : [jquery],			
-			done : function (err, window) {
-				if (err)
-					console.log(err)
-				else
-				{
-					parseBritishCycling(window, 'https://www.britishcycling.org.uk');					
-				}
-			}
-		});   					
-	}
-	else if (error) {
-		console.log(error);
-	}
-	rl.close();  	
-});
-*/
+								fetxhNextUkCyclingEvent(urls, allEvents, then);
+							}
+						}
+					});
+		});
+}
 
-
-var requestOptions = {
-    url: 'http://www.ukcyclingevents.co.uk/events/category/road', 
-    method: "GET",     
-    //proxy: 'http://917753:AliceW_1@ncproxy1:8080',
-    json: false
-};
-
-request(requestOptions, function (error, response, body) {
-	if (!error && response.statusCode == 200) {
-
-		jsdom.env({
-			html : body,
-			src : [jquery],			
-			done : function (err, window) {
-				if (err)
-					console.log(err)
-				else
-				{
-					parseUkCyclingEvents(window, 'http://www.ukcyclingevents.co.uk');					
-				}
-			}
-		});   					
-	}
-	else if (error) {
-		console.log(error);
-	}
-	rl.close();  	
-});
-
-
-
-
-rl.question("Enter to exit > ", function(answer) {
-  console.log("End:", answer);
-  rl.close();
-});
+function handleEndResult(allEvents) {
+	console.log("END"  + allEvents.length);	
+}
 
 function Event(name, date, kind, locationSummary, indexerUrl) {
 	this.name = name;
@@ -110,44 +68,20 @@ var requestPromise = Promise.method(function(url) {
 	});
 });
 
-
-function parseUkCyclingEvents(window, indexerRootUrl) {
-	var urls = window.$.makeArray(window.$("ul.thumbnails:first a").map(function(index, a) {		
-		return (indexerRootUrl + a.href);
-	}));
-
-	fetxhNextUkCyclingEvent(urls);
-
-	//Promise.each(promises, function(item, index, length) {
-	//	parseUkCyclingEvent(item.body, item.request.uri.href);
-	//});
-
-	/*
-	var promises = window.$.makeArray(window.$("ul.thumbnails:first a").map(function(index, a) {		
-		return (request.getAsync(indexerRootUrl + a.href));
-	}));
-
-
-	Promise.all(promises).then(values =>
-	{
-		for (var i = 0; i < values.length; i++) {
-			parseUkCyclingEvent(values[i].body, values[i].request.uri.href);
-		};				
-	});
-	*/	
-}
-
-function fetxhNextUkCyclingEvent(urls) {
+function fetxhNextUkCyclingEvent(urls, intoEvents, then) {
 	var url = urls.pop();
-	if (url == undefined) return;
+	if (url == undefined) {
+		then(intoEvents);
+		return;
+	}
 
 	requestPromise(url).then(function(response) {
-		parseUkCyclingEvent(response.body, url);
-		fetxhNextUkCyclingEvent(urls);
+		parseUkCyclingEvent(response.body, url, intoEvents);
+		fetxhNextUkCyclingEvent(urls, intoEvents, then);
 	});
 }
 
-function parseUkCyclingEvent(html, sourceUrl) {
+function parseUkCyclingEvent(html, sourceUrl, intoEvents) {
 	jsdom.env({
 		html : html,
 		src : [jquery],			
@@ -168,21 +102,18 @@ function parseUkCyclingEvent(html, sourceUrl) {
 						sourceUrl
 						);
 
-					console.log(event.toJSON());
+					intoEvents.push(event);
 				}
 				else
 				{
 					console.log("Cannot scrape " + sourceUrl);
-
 				}				
-
-				//console.log(event.toJSON());
 			}
 		}
 	});   					
 }
 
-function parseBritishCycling(window, indexerUrlPrefix)
+function parseBritishCycling(window, indexerUrlPrefix, intoEvents)
 {	
 	var events = window.$("tr.events--desktop__row:has(td)").map(function(index, tr) {				
 		var event = new Event(
@@ -194,18 +125,31 @@ function parseBritishCycling(window, indexerUrlPrefix)
 		); 
 		return event; 		
 	})
-	
-	console.log("Item count: " + events.length);
-	
-	console.log(events[5].name);
-	console.log(events[5].date);
-	console.log(events[5].kind);
-	console.log(events[5].locationSummary);
-	console.log(events[5].indexerUrl);
-	
-	console.log(events[5].toJSON());
+
+		for (var i = events.length - 1; i >= 0; i--) {
+		intoEvents.push(events[i]);
+	};
 }
 
-String.prototype.clean = function() {
-	return this.trim().replace('/r', '/');
-}
+console.log("British cycling...")
+
+request
+	.getAsync("https://www.britishcycling.org.uk/events?search_type=upcomingevents&zuv_bc_event_filter_id[]=5&resultsperpage=1000")
+	.then(function(response) {
+		jsdom.env({
+			html : response.body,
+			src : [jquery],			
+			done : function (err, window) {
+				if (err)
+					console.log(err)
+				else
+				{
+					parseBritishCycling(window, "https://www.britishcycling.org.uk", allEvents);
+					console.log("Current count  " +  allEvents.length);
+					console.log("UK cycling...");
+					manageUkCyclingEvents(allEvents, handleEndResult);
+				}
+			}
+		});
+	});
+
