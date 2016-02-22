@@ -74,16 +74,50 @@ geoCodeUrl += filteredEvents[0].locationSummary.replace(/\n/g, ",");
 
 console.log(geoCodeUrl);
 
-request.getAsync(geoCodeUrl)
-	.then(function(response) {
-		var geo = JSON.parse(response.body);
-		filteredEvents[0].formattedAddress = geo.results[0].formatted_address;
-		filteredEvents[0].geometryLocation = geo.results[0].geometry.location
+function logGeoLocationFail(event) {
+	var evStr = JSON.stringify(event);
+	console.log("Unable to geo locate:");
+	console.log(evStr);
+	console.log("Request was:");
+	console.log(geoCodeUrl);
+}
 
-		console.log(filteredEvents[0]);
+function getNextGeoLoc(events, index, resolve) {
+	console.log("Geo locating " + index)
+	request.getAsync(geoCodeUrl)
+		.then(function(response) {
 
-		return response;
-	});
+			if (!response.body) {
+				logGeoLocationFail(events[index], geoCodeUrl);
+				return;
+			};
+
+			var geo = JSON.parse(response.body);
+
+			if (!geo.results || geo.results.length == 0) {
+				logGeoLocationFail(events[index], geoCodeUrl);
+				return;
+			};
+
+			events[index].formattedAddress = geo.results[0].formatted_address;
+			events[index].geometryLocation = geo.results[0].geometry.location;
+		})
+		.then(function() {
+			if (++index == events.length)
+				resolve(events);
+			else
+				setTimeout(function() {
+					getNextGeoLoc(events, index, resolve);
+				}, 1000);
+		});
+}
+
+getNextGeoLoc(filteredEvents, 0, function(events) {
+	fs.writeFileSync('data-uk.js', JSON.stringify(events), 'utf8');
+	console.log("Geo locating finished.");
+})
+
+
 
 //https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=
 
