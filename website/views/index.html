@@ -8,6 +8,8 @@
 <script src="semantic/dist/semantic.min.js"></script>
 <script src="http://maps.googleapis.com/maps/api/js"></script>
 <script>
+var _map;
+	
 function initialize() {
 	var mapProp = {
 		center:new google.maps.LatLng(51.508742,-0.120850),
@@ -24,34 +26,34 @@ function initialize() {
 	};	
 	
 	//create a marker
-	var map=new google.maps.Map(document.getElementById("googleMap"),mapProp);
+	_map=new google.maps.Map(document.getElementById("googleMap"),mapProp);
 	
 	//auto zoom out
-	google.maps.event.addListener(map,'center_changed',function() {
+	google.maps.event.addListener(_map,'center_changed',function() {
 		window.setTimeout(function() {
-			map.panTo(marker.getPosition());
+			_map.panTo(marker.getPosition());
 		},3000);
 	});
 	
-	//zoom in on marker
+	//create a marker
 	var marker=new google.maps.Marker({
 		position:new google.maps.LatLng(51.508742, -0.120850),
 	});
 	
 	//set the marker to the map
-	marker.setMap(map);
+	marker.setMap(_map);
 	
 	//zoom in on marker
 	google.maps.event.addListener(marker,'click',function() {
-		map.setZoom(9);
-		map.setCenter(marker.getPosition());						
+		_map.setZoom(9);
+		_map.setCenter(marker.getPosition());						
 	});
 	
 	var infowindow = new google.maps.InfoWindow({
 		content: '<div>hi world</div>'
 	});
 	marker.addListener('click', function() {
-		infowindow.open(map, marker);
+		infowindow.open(_map, marker);
 	})
 	
 	

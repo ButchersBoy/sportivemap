@@ -59,14 +59,47 @@ process.chdir = function (dir) {
 process.umask = function() { return 0; };
 
 },{}],2:[function(require,module,exports){
+"use strict";
+
 var React = require('react');
 var ReactDOM = require('react-dom');
 
-ReactDOM.render(React.createElement(
-  'h1',
-  null,
-  'Hello, world!'
-), document.getElementById('sportiveList'));
+class Sportive extends React.Component {
+  render() {
+
+    var geo = this.props.item.geometryLocation;
+    console.log(geo);
+    console.log(_map);
+    var marker = new google.maps.Marker({
+      position: new google.maps.LatLng(geo.lat, geo.lng)
+    });
+
+    marker.setMap(_map);
+
+    return React.createElement(
+      'div',
+      null,
+      this.props.item.name
+    );
+  }
+}
+
+class SportiveList extends React.Component {
+  render() {
+    var nodes = this.props.data.map(function (sportive, index) {
+      return React.createElement(Sportive, { key: index, item: sportive });
+    });
+    return React.createElement(
+      'div',
+      null,
+      nodes
+    );
+  }
+}
+
+$.post("api/list/uk").done(function (data) {
+  ReactDOM.render(React.createElement(SportiveList, { data: data }), document.getElementById('sportiveList'));
+});
 
 },{"react":159,"react-dom":30}],3:[function(require,module,exports){
 (function (process){
