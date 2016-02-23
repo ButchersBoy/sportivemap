@@ -16,7 +16,9 @@ class Sportive extends React.Component {
     marker.setMap(_map);
     
     return (
-      <div>{this.props.item.name}</div>
+        <div>
+            <div>{this.props.item.name} - {this.props.item.date}</div>
+        </div>
     );
   }
 }

@@ -7,13 +7,13 @@ console.log(events.length);
 console.log(events[0]);
 
 events.sort(function(a, b) {
-    return Date.parse(b.date).valueOf() - Date.parse(a.date).valueOf();
+    return Date.parse(a.date).valueOf() - Date.parse(b.date).valueOf();
 });
 
 console.log("sorted.");
 
 for (var i = events.length - 1; i >= 0; i--) {
-	console.log(events[  i].date);
+	console.log(events[i].date);
 };
 
 fs.writeFileSync('data-uk-sorted.js', JSON.stringify(events), 'utf8');
