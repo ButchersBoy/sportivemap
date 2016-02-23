@@ -95,14 +95,14 @@ function getNextGeoLoc(events, index, failedEventItems, resolve) {
 		.then(function(response) {
 
 			if (!response.body) {
-				logGeoLocationFail(events[index], geoCodeUrl);
+				logGeoLocationFail(events[index], geoCodeUrl, failedEventItems);
 				return;
 			};
 
 			var geo = JSON.parse(response.body);
 
 			if (!geo.results || geo.results.length == 0) {
-				logGeoLocationFail(events[index], geoCodeUrl);
+				logGeoLocationFail(events[index], geoCodeUrl, failedEventItems);
 				return;
 			};
 
