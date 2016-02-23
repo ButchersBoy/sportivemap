@@ -16,4 +16,4 @@ for (var i = events.length - 1; i >= 0; i--) {
 	console.log(events[i].date);
 };
 
-fs.writeFileSync('data-uk-sorted.js', JSON.stringify(events), 'utf8');
+fs.writeFileSync('data-uk-sorted.json', JSON.stringify(events), 'utf8');

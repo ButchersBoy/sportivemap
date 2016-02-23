@@ -57,6 +57,16 @@ function parseDate(input) {
 var text = fs.readFileSync("dataraw.js",  'utf8');
 var events = JSON.parse(text);
 console.log("Events loaded: " + events.length);
+
+text = fs.readFileSync("enhance-overrides.json",  'utf8');
+var overrides = JSON.parse(text);
+var overridesMap = new Map();
+for (var index = 0; index < overrides.length; index++) {
+    overridesMap.set(overrides[index].name, overrides[index].geoCodeThis);        
+}
+console.log("Overrides loaded: " + overridesMap.size);
+
+
 var filteredEvents = new Array();
 
 for (var i = events.length - 1; i >= 0; i--) {
@@ -72,8 +82,9 @@ for (var i = events.length - 1; i >= 0; i--) {
 
 console.log("Remaining after date parse: " + filteredEvents.length);
 
-function failedEventItem(name, geoCodeUrl) {
+function failedEventItem(name, date, geoCodeUrl) {
 	this.name = name;
+    this.date = date;
 	this.geoCodeUrl = geoCodeUrl;	
 }
 
@@ -83,25 +94,28 @@ function logGeoLocationFail(event, geoCodeUrl, failedEventItems) {
 	console.log(evStr);
 	console.log("Request was:");
 	console.log(geoCodeUrl);
-	failedEventItems.push(new failedEventItem(event.name, geoCodeUrl));
+	failedEventItems.push(new failedEventItem(event.name, event.date, geoCodeUrl));
 }
 
-function getNextGeoLoc(events, index, failedEventItems, resolve) {
-	console.log("Geo locating " + index)
-	var geoCodeUrl = "https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyCMReQsiiLJ4_q-aIiqzunOwwNXsr29sIo&address=";
-	geoCodeUrl += events[index].locationSummary.replace(/\n/g, ",");
+function getNextGeoLoc(events, index, failedEventItems, resolve) {	    
+    var urlPrefix = "https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyCMReQsiiLJ4_q-aIiqzunOwwNXsr29sIo&address=";
+    var urlSuffix = overridesMap.get(events[index].name);
+    if (urlSuffix == undefined)
+        urlSuffix = events[index].locationSummary.replace(/\n/g, ",");
+    var geoCodeUrl = urlPrefix.concat(urlSuffix);	
 
 	request.getAsync(geoCodeUrl)
 		.then(function(response) {
 
-			if (!response.body) {
+			if (!response.body) {                
 				logGeoLocationFail(events[index], geoCodeUrl, failedEventItems);
 				return;
-			};
+			};                            
 
 			var geo = JSON.parse(response.body);
 
 			if (!geo.results || geo.results.length == 0) {
+                console.log(response.body);
 				logGeoLocationFail(events[index], geoCodeUrl, failedEventItems);
 				return;
 			};
@@ -115,12 +129,19 @@ function getNextGeoLoc(events, index, failedEventItems, resolve) {
 			else
 				setTimeout(function() {
 					getNextGeoLoc(events, index, failedEventItems, resolve);
-				}, 10);
-		});
+				}, 2);
+		})
+        .catch(function(e) {
+            console.log('error');
+            console.log(e);
+            // this also returns equivalent to Promise.resolve(undefined);
+            // to propagate the "error" condition, you want to either throw e, or return Promise.reject(something here);
+        });
 }
 
+//332 will fail for quick testing
 getNextGeoLoc(filteredEvents, 332, new Array(), function(events, failedEventItems) {
-	fs.writeFileSync('data-uk.js', JSON.stringify(events), 'utf8');
-	fs.writeFileSync('data-uk-failed.js', JSON.stringify(failedEventItems), 'utf8');
+	fs.writeFileSync('data-uk.json', JSON.stringify(events), 'utf8');
+	fs.writeFileSync('data-uk-failed.json', JSON.stringify(failedEventItems), 'utf8');
 	console.log("Geo locating finished.");
 })

@@ -1,5 +1,10 @@
 'option strict'
 
+//script orders :
+//index.js
+//enhance.js
+//sort.js
+
 var fs = require("fs");
 var readline = require('readline');
 var jsdom = require("jsdom");

@@ -1,1 +1,0 @@
-[{"name":"Tommy Godwin Challenge","geoCodeUrl":"https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyCMReQsiiLJ4_q-aIiqzunOwwNXsr29sIo&address=Marie Curie Hospice,Marsh Lane, Solihull, West Midlands, B91 2PQThe start and finish will be at the hospice but car parking and other facilities will be in the car park of Solihull School which will be signposted."}]
