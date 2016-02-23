@@ -69,12 +69,7 @@ for (var i = events.length - 1; i >= 0; i--) {
 
 console.log("Remaining after date parse: " + filteredEvents.length);
 
-var geoCodeUrl = "https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyCMReQsiiLJ4_q-aIiqzunOwwNXsr29sIo&address=";
-geoCodeUrl += filteredEvents[0].locationSummary.replace(/\n/g, ",");
-
-console.log(geoCodeUrl);
-
-function logGeoLocationFail(event) {
+function logGeoLocationFail(event, geoCodeUrl) {
 	var evStr = JSON.stringify(event);
 	console.log("Unable to geo locate:");
 	console.log(evStr);
@@ -84,6 +79,9 @@ function logGeoLocationFail(event) {
 
 function getNextGeoLoc(events, index, resolve) {
 	console.log("Geo locating " + index)
+	var geoCodeUrl = "https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyCMReQsiiLJ4_q-aIiqzunOwwNXsr29sIo&address=";
+	geoCodeUrl += events[index].locationSummary.replace(/\n/g, ",");
+
 	request.getAsync(geoCodeUrl)
 		.then(function(response) {
 
@@ -99,8 +97,8 @@ function getNextGeoLoc(events, index, resolve) {
 				return;
 			};
 
-			events[index].formattedAddress = geo.results[index].formatted_address;
-			events[index].geometryLocation = geo.results[index].geometry.location;
+			events[index].formattedAddress = geo.results[0].formatted_address;
+			events[index].geometryLocation = geo.results[0].geometry.location;
 		})
 		.then(function() {
 			if (++index == events.length)
