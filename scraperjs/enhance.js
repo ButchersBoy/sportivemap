@@ -99,8 +99,8 @@ function getNextGeoLoc(events, index, resolve) {
 				return;
 			};
 
-			events[index].formattedAddress = geo.results[0].formatted_address;
-			events[index].geometryLocation = geo.results[0].geometry.location;
+			events[index].formattedAddress = geo.results[index].formatted_address;
+			events[index].geometryLocation = geo.results[index].geometry.location;
 		})
 		.then(function() {
 			if (++index == events.length)
@@ -116,35 +116,3 @@ getNextGeoLoc(filteredEvents, 0, function(events) {
 	fs.writeFileSync('data-uk.js', JSON.stringify(events), 'utf8');
 	console.log("Geo locating finished.");
 })
-
-
-
-//https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=
-
-//AIzaSyCMReQsiiLJ4_q-aIiqzunOwwNXsr29sIo
-
-//API key  AIzaSyCMReQsiiLJ4_q-aIiqzunOwwNXsr29sIo
-
-//var date1 = parseDate(input4);
-//console.log(date1);
-
-
-/*
-while (match !=  null) {
-
-RegExp.
-
-	match = 
-}
-console.log(groups[2]);	
-
-console.log(Date.parse("Sun 30/10/16"));
-console.log(Date.parse("Wednesday 22nd June 2016"));
-console.log(Date.parse("Sat 02/07/16\n- Sun 03/07/16"));
-
-console.log(Date.parse("22 June 2016").toString());
-
-var text = fs.readFileSync("dataraw.js",  'utf8');
-var events = JSON.parse(text);
-console.log(events.length);
-*/
