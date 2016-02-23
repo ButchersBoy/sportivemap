@@ -12,7 +12,10 @@ function parseDateMethodOne(input) {
 	    output.push(matches[1]);
 	}
 	if (output.length == 3 || output.length == 6)
-	{
+	{		
+		if (output.length == 3 &&  input.indexOf('&') != -1)
+			return null;
+		
 		var day = output[0];
 		var month = output[1];
 		var year = output[2];
@@ -32,7 +35,7 @@ function parseDateMethodTwo(input) {
 	while (matches = regex.exec(input)) {
 	    output.push(matches[1]);
 	}
-	if  (output.length == 2) {
+	if  (output.length >= 2) {
 		var monthMatch = new RegExp(months, 'i').exec(input);
 		if (monthMatch)
 		{
@@ -69,15 +72,21 @@ for (var i = events.length - 1; i >= 0; i--) {
 
 console.log("Remaining after date parse: " + filteredEvents.length);
 
-function logGeoLocationFail(event, geoCodeUrl) {
+function failedEventItem(name, geoCodeUrl) {
+	this.name = name;
+	this.geoCodeUrl = geoCodeUrl;	
+}
+
+function logGeoLocationFail(event, geoCodeUrl, failedEventItems) {
 	var evStr = JSON.stringify(event);
 	console.log("Unable to geo locate:");
 	console.log(evStr);
 	console.log("Request was:");
 	console.log(geoCodeUrl);
+	failedEventItems.push(new failedEventItem(event.name, geoCodeUrl));
 }
 
-function getNextGeoLoc(events, index, resolve) {
+function getNextGeoLoc(events, index, failedEventItems, resolve) {
 	console.log("Geo locating " + index)
 	var geoCodeUrl = "https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyCMReQsiiLJ4_q-aIiqzunOwwNXsr29sIo&address=";
 	geoCodeUrl += events[index].locationSummary.replace(/\n/g, ",");
@@ -105,12 +114,13 @@ function getNextGeoLoc(events, index, resolve) {
 				resolve(events);
 			else
 				setTimeout(function() {
-					getNextGeoLoc(events, index, resolve);
+					getNextGeoLoc(events, index, failedEventItems, resolve);
 				}, 1000);
 		});
 }
 
-getNextGeoLoc(filteredEvents, 0, function(events) {
+getNextGeoLoc(filteredEvents, 0, new Array(), function(events, failedEventItems) {
 	fs.writeFileSync('data-uk.js', JSON.stringify(events), 'utf8');
+	fs.writeFileSync('data-uk-failed.js', JSON.stringify(failedEventItems), 'utf8');
 	console.log("Geo locating finished.");
 })
