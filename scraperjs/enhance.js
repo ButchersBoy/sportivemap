@@ -111,15 +111,15 @@ function getNextGeoLoc(events, index, failedEventItems, resolve) {
 		})
 		.then(function() {
 			if (++index == events.length)
-				resolve(events);
+				resolve(events, failedEventItems);
 			else
 				setTimeout(function() {
 					getNextGeoLoc(events, index, failedEventItems, resolve);
-				}, 1000);
+				}, 10);
 		});
 }
 
-getNextGeoLoc(filteredEvents, 0, new Array(), function(events, failedEventItems) {
+getNextGeoLoc(filteredEvents, 332, new Array(), function(events, failedEventItems) {
 	fs.writeFileSync('data-uk.js', JSON.stringify(events), 'utf8');
 	fs.writeFileSync('data-uk-failed.js', JSON.stringify(failedEventItems), 'utf8');
 	console.log("Geo locating finished.");

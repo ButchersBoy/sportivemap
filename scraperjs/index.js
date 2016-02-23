@@ -8,14 +8,14 @@ var Promise = require("bluebird");
 Promise.promisifyAll(require("request"));
 
 String.prototype.clean = function() {
-	return this.trim().replace('/r', '/');
+	return this.trim().replace(/\r/g, '').replace(/\t/g, '').replace(/\n/g, '').replace("View map", '');
 }
 
 var jquery = fs.readFileSync("./bin/jquery.js", "utf-8");
 
 var allEvents = new Array();
 
-function manageUkCyclingEvents(allEvents, then)  {
+function manageUkCyclingEvents(allEvents, then) {
 	request
 		.getAsync('http://www.ukcyclingevents.co.uk/events/category/road')
 		.then(function(response){
@@ -33,6 +33,27 @@ function manageUkCyclingEvents(allEvents, then)  {
 								}));
 
 								fetxhNextUkCyclingEvent(urls, allEvents, then);
+							}
+						}
+					});
+		});
+}
+
+function manageBritishCyclingEvents(intoEvents, then) {
+    	request
+		.getAsync('https://www.britishcycling.org.uk/events?search_type=upcomingevents&zuv_bc_event_filter_id[]=5&resultsperpage=1000')
+		.then(function(response){
+			jsdom.env({
+						html : response.body,
+						src : [jquery],			
+						done : function (err, window) {
+							if (err)
+								console.log(err)
+							else
+							{                                                                
+								console.log("Running initial British cycling parse...");                                
+                                parseBritishCycling(window, "https://www.britishcycling.org.uk", intoEvents);
+                                then(intoEvents);                                                                
 							}
 						}
 					});
@@ -118,23 +139,72 @@ function parseUkCyclingEvent(html, sourceUrl, intoEvents) {
 function parseBritishCycling(window, indexerUrlPrefix, intoEvents)
 {	
 	var events = window.$("tr.events--desktop__row:has(td)").map(function(index, tr) {				
-		var event = new Event(
+		        
+        var url = indexerUrlPrefix.concat(window.$("td.events--event__column > a", tr).attr('href'))
+            .clean()
+            .replace("https://www-britishcycling-org-uk", "");        
+        
+        var event = new Event(
 			window.$("td.table__more-cell", tr).text().clean(),
 			window.$("td.event--date__column", tr).text().clean(),			
 			window.$("td.event--type__row", tr).text().clean(),						 
 			window.$("td:not([class]):last", tr).text().clean(),
-			indexerUrlPrefix.concat(window.$("td.events--event__column > a", tr).attr('href')).clean()
+			url
 		); 
 		return event; 		
 	})
 
-		for (var i = events.length - 1; i >= 0; i--) {
+	for (var i = events.length - 1; i >= 0; i--) {
 		intoEvents.push(events[i]);
 	};
 }
 
-console.log("British cycling...")
+function enhanceNextBritishCyclingEvent(events, index, then) {
+    requestPromise(events[index].indexerUrl)
+        .then(response => {
+            jsdom.env({
+                html : response.body,
+                src : [jquery],			
+                done : function (err, window) {
+                    console.log("Enhanching British event " + index)
+                    if (err)
+                        console.log(err)
+                    else			
+                    {	
+                        var address = window.$("div#event_details_tabs>div:nth-child(2)>div>div:nth-child(4)>div:nth-child(1)>dl>dd:nth-child(8)>p").text().clean();                        
+                        if (address)
+                        {                            
+                            events[index].locationSummary = address;                                                        
+                        }                                                    
+                    }
+                    
+                    if (++index == events.length) {
+                        then(events);
+                    } else {
+                        setTimeout(() => {
+                            enhanceNextBritishCyclingEvent(events, index, then);    
+                        }, 25)                                        
+                    }
+                }
+            });   
+            
+        });
+}
 
+
+console.log("British cycling events...");
+var allEvents = new Array();
+manageBritishCyclingEvents(allEvents, bEv1 => {
+    console.log("British events: " + bEv1.length);
+    enhanceNextBritishCyclingEvent(allEvents, 0, bEv2 => {
+        
+        console.log("British cycling done!  UK Cycling...");
+        
+        manageUkCyclingEvents(allEvents, handleEndResult);
+    });        
+});
+
+/*
 request
 	.getAsync("https://www.britishcycling.org.uk/events?search_type=upcomingevents&zuv_bc_event_filter_id[]=5&resultsperpage=1000")
 	.then(function(response) {
@@ -155,3 +225,4 @@ request
 		});
 	});
 
+*/
