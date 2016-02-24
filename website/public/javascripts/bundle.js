@@ -95,6 +95,50 @@ class SportiveList extends React.Component {
   }
 }
 
+class DateFilterItem extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleButtonClick = this.handleButtonClick.bind(this);
+  }
+  handleButtonClick(e) {
+    this.props.onClick(this.props.logicalIndex);
+  }
+  render() {
+    var className = "ui toggle button";
+    if (this.props.isSelected) className += " positive";
+    return React.createElement(
+      'button',
+      { className: className, onClick: e => this.handleButtonClick(e) },
+      this.props.description
+    );
+  }
+}
+
+class DateFilter extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleDateFilterItemClick = this.handleDateFilterItemClick.bind(this);
+    this.state = { selectedIndex: 3 };
+  }
+  handleDateFilterItemClick(logicalIndex) {
+    this.setState({ selectedIndex: logicalIndex });
+  }
+  render() {
+    console.log("Rendering..." + this.state.selectedIndex);
+    var nodes = [["1 Week"], ["2 Weeks"], ["1 Month"], ["3 Months"], ["6 Months"], ["9 Months"], ["1 Year"]].map((item, index) => {
+      return React.createElement(DateFilterItem, { description: item[0], key: index,
+        logicalIndex: index,
+        isSelected: this.state.selectedIndex >= index,
+        onClick: this.handleDateFilterItemClick });
+    });
+    return React.createElement(
+      'div',
+      { className: "ui buttons" },
+      nodes
+    );
+  }
+}
+
 class MapContainer {
   constructor(elementId, geo) {
     var mapProps = {
@@ -113,7 +157,6 @@ class MapContainer {
     this.map = new google.maps.Map(document.getElementById(elementId), mapProps);
   }
   addMarker(geo, name) {
-    console.log("add marker " + geo.lat + " " + geo.lng);
     var marker = new google.maps.Marker({
       position: new google.maps.LatLng(geo.lat, geo.lng)
     });
@@ -132,6 +175,7 @@ function initMap() {
   var mapContainer = new MapContainer("googleMap", { lat: 51.508742, lng: -0.120850 });
   $.post("api/list/uk").done(function (data) {
     ReactDOM.render(React.createElement(SportiveList, { data: data, mapContainer: mapContainer }), document.getElementById('sportiveList'));
+    ReactDOM.render(React.createElement(DateFilter, null), document.getElementById('dateFilter'));
   });
 }
 

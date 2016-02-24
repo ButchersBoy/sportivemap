@@ -1,7 +1,7 @@
 
 var fs = require("fs");
 
-var text = fs.readFileSync("data-uk.js",  'utf8');
+var text = fs.readFileSync("data-uk.json",  'utf8');
 var events = JSON.parse(text);
 console.log(events.length);
 console.log(events[0]);

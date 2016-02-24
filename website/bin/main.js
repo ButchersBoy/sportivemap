@@ -24,6 +24,61 @@ class SportiveList extends React.Component {
   }
 }
 
+
+
+class DateFilterItem extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleButtonClick = this.handleButtonClick.bind(this);
+  }
+  handleButtonClick(e) {
+    this.props.onClick(this.props.logicalIndex);
+  }
+  render() {
+    var className = "ui toggle button";
+    if (this.props.isSelected)
+      className += " positive"; 
+    return (
+      <button className={className} onClick={e => this.handleButtonClick(e)}>
+        {this.props.description}
+      </button>);
+  }
+}
+
+class DateFilter extends React.Component {
+  constructor(props) {
+    super(props);    
+    this.handleDateFilterItemClick = this.handleDateFilterItemClick.bind(this);
+    this.state = {selectedIndex : 3}
+  }
+  handleDateFilterItemClick(logicalIndex) {
+    this.setState({selectedIndex : logicalIndex});    
+  }
+  render() {
+    console.log("Rendering..."+this.state.selectedIndex);
+    var nodes = [
+      ["1 Week"],
+      ["2 Weeks"],
+      ["1 Month"],
+      ["3 Months"],
+      ["6 Months"],
+      ["9 Months"],
+      ["1 Year"]
+    ].map((item, index) => {
+      return (<DateFilterItem description={item[0]} key={index} 
+                              logicalIndex={index}
+                              isSelected={this.state.selectedIndex >= index}
+                              onClick={this.handleDateFilterItemClick} />);
+    });         
+    return (
+      <div className={"ui buttons"}>
+        {nodes}
+      </div>      
+    );    
+  }  
+} 
+
+
 class MapContainer {
   constructor(elementId, geo) {
     	var mapProps = {
@@ -63,6 +118,10 @@ function initMap() {
       ReactDOM.render(
         <SportiveList data={data} mapContainer={mapContainer} />,
         document.getElementById('sportiveList')
+      );
+      ReactDOM.render(
+        <DateFilter />,
+        document.getElementById('dateFilter')        
       );
     });  
 }
