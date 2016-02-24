@@ -56,7 +56,7 @@ class SportiveList extends React.Component {
     }, this);
     return React.createElement(
       'div',
-      null,
+      { className: "sportiveListNodes" },
       nodes
     );
   }

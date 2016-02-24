@@ -40,7 +40,7 @@ class SportiveList extends React.Component {
     var nodes = this.props.data.map(function(sportive, index) {
       return (<Sportive key={index} index={index} item={sportive}  mapContainer={this.props.mapContainer} />);      
     }, this);
-    return (<div>{nodes}</div>);
+    return (<div className={"sportiveListNodes"}>{nodes}</div>);
   }
 }
 
