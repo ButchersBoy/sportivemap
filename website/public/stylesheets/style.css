@@ -2,8 +2,9 @@
     margin-top: 8px;
     margin-bottom: 2px !important;
 }
-.header span {
-    margin-left: 1px;
+.altHeader {
+    margin-top: 40px;
+    margin-left: 48px;
 }
 #googleMap {
   margin-top: 16px;
@@ -16,13 +17,13 @@
 }
 #sportiveList {
     overflow: auto;
-    margin-top: 40px;  
+    margin-top: 8px;  
     margin-left: 8px;
     height: 90%;  
 }
 .sportiveListNodes {
     padding: 18px;
 }
-.ui.card {
-    padding: 8px;
+.clickable {
+    cursor: hand;
 }

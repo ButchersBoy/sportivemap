@@ -5,14 +5,58 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var Moment = require('moment');
 
+class SportiveInfoCard extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleMarkerClick = this.handleMarkerClick.bind(this);
+  }
+  handleMarkerClick() {
+    this.props.onMarkerClick();
+  }
+  render() {
+    return React.createElement(
+      'div',
+      { className: "ui centered card" },
+      React.createElement(
+        'div',
+        { className: "content clickable", onClick: this.handleMarkerClick },
+        React.createElement('i', { className: "right floated marker icon" }),
+        React.createElement(
+          'div',
+          { className: "header" },
+          this.props.item.name
+        )
+      ),
+      React.createElement(
+        'div',
+        { className: "content" },
+        React.createElement(
+          'div',
+          null,
+          Moment(this.props.item.date).format("dddd, MMMM Do YYYY")
+        ),
+        React.createElement(
+          'div',
+          null,
+          React.createElement(
+            'a',
+            { href: this.props.item.indexerUrl, target: '_blank' },
+            'Website'
+          )
+        )
+      )
+    );
+  }
+}
+
 class SportiveInfoWindow extends React.Component {
   render() {
     return React.createElement(
       'div',
-      null,
+      { className: "ui" },
       React.createElement(
         'div',
-        null,
+        { className: "header" },
         this.props.item.name
       ),
       React.createElement(
@@ -34,6 +78,14 @@ class SportiveInfoWindow extends React.Component {
 }
 
 class Sportive extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleCardMarkerClick = this.handleCardMarkerClick.bind(this);
+  }
+  handleCardMarkerClick() {
+    this.props.mapContainer.panTo(this.marker);
+    google.maps.event.trigger(this.marker, 'click');
+  }
   componentWillUnmount() {
     this.marker.setMap(null);
   }
@@ -41,11 +93,7 @@ class Sportive extends React.Component {
     this.marker = this.props.mapContainer.addMarker(this.props.item.geometryLocation, this.props.index, el => ReactDOM.render(React.createElement(SportiveInfoWindow, { item: this.props.item }), el));
   }
   render() {
-    return React.createElement(
-      'div',
-      { className: "ui centered card" },
-      React.createElement(SportiveInfoWindow, { item: this.props.item })
-    );
+    return React.createElement(SportiveInfoCard, { item: this.props.item, onMarkerClick: this.handleCardMarkerClick });
   }
 }
 
@@ -142,6 +190,9 @@ class MapContainer {
     marker.setMap(this.map);
 
     return marker;
+  }
+  panTo(marker) {
+    this.map.panTo(marker.getPosition());
   }
 }
 

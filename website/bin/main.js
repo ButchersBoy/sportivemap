@@ -4,11 +4,34 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var Moment = require('moment');
 
+class SportiveInfoCard extends React.Component {
+    constructor(props) {
+        super(props);
+        this.handleMarkerClick = this.handleMarkerClick.bind(this);
+    }
+    handleMarkerClick() {
+        this.props.onMarkerClick();
+    }
+    render() {
+        return (
+            <div className={"ui centered card"}>
+                <div className={"content clickable"}  onClick={this.handleMarkerClick}>
+                    <i className={"right floated marker icon"}></i>
+                    <div className={"header"}>{this.props.item.name}</div>
+                </div>
+                <div className={"content"}>
+                    <div>{Moment(this.props.item.date).format("dddd, MMMM Do YYYY")}</div>
+                    <div><a href={this.props.item.indexerUrl} target="_blank">Website</a></div>
+                </div>                               
+            </div>);
+    }
+}
+
 class SportiveInfoWindow extends React.Component {
     render() {
         return (
-            <div>
-                <div>{this.props.item.name}</div>
+            <div className={"ui"}>
+                <div className={"header"}>{this.props.item.name}</div>
                 <div>{Moment(this.props.item.date).format("dddd, MMMM Do YYYY")}</div>
                 <div><a href={this.props.item.indexerUrl} target="_blank">Website</a></div>
             </div>);
@@ -16,6 +39,14 @@ class SportiveInfoWindow extends React.Component {
 }
 
 class Sportive extends React.Component {
+    constructor(props) {
+        super(props);
+        this.handleCardMarkerClick = this.handleCardMarkerClick.bind(this);
+    }
+  handleCardMarkerClick() {
+      this.props.mapContainer.panTo(this.marker);
+      google.maps.event.trigger(this.marker, 'click');
+  }
   componentWillUnmount() {
     this.marker.setMap(null);
   }
@@ -27,11 +58,7 @@ class Sportive extends React.Component {
         );
   }
   render() {                        
-    return (
-        <div className={"ui centered card"}>
-            <SportiveInfoWindow item={this.props.item}/>
-        </div>
-    );
+    return (<SportiveInfoCard item={this.props.item} onMarkerClick={this.handleCardMarkerClick}/>);
   }
 }
 
@@ -127,6 +154,9 @@ class MapContainer {
     
     return marker;   
   }    
+  panTo(marker) {
+      this.map.panTo(marker.getPosition());
+  }
 }
 
 class DateFilterOp {
