@@ -132,7 +132,7 @@ function getNextGeoLoc(events, index, failedEventItems, resolve) {
 			else
 				setTimeout(function() {
 					getNextGeoLoc(events, index, failedEventItems, resolve);
-				}, 2);
+				}, 500);
 		})
         .catch(function(e) {
             console.log('error');

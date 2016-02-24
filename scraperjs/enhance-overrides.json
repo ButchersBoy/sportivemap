@@ -153,7 +153,7 @@
   {
     "name": "Cycling Weekly South Downs Spring",
     "date": "2016-05-14T23:00:00.000Z",
-    "geoCodeUrl": "Plumpton Race Course, Plumpton, East Sussex"
+    "geoCodeThis": "Plumpton Racecourse Ltd, Plumpton, Lewes, East Sussex BN7 3AL, UK",
     "formatted_address": "Plumpton Racecourse Ltd, Plumpton, Lewes, East Sussex BN7 3AL, UK",
     "location": {
       "lat": 50.9245329,
@@ -243,7 +243,7 @@
   {
     "name": "The Broken Spoke 200",
     "date": "2016-07-01T23:00:00.000Z",
-    "geoCodeThis": "The Catholic High School, Old Wrexham Road, Chester, Cheshire, CH4 7HS"
+    "geoCodeThis": "The Catholic High School, Old Wrexham Road, Chester, Cheshire, CH4 7HS",
     "formatted_address": "The Catholic High School, Old Wrexham Rd, Chester, Cheshire West and Chester CH4 7HS, UK",
     "location": {
       "lat": 53.17910819999999,
@@ -284,7 +284,7 @@
   {
     "name": "Yorkshire Wolds Cycle Challenge 2016",
     "date": "2016-07-15T23:00:00.000Z",
-    "geoCodeUrl": "Norton%20College,%20Langton%20Road,%20Norton,%20Malton,%20North%20Yorkshire,%20YO17%209PT",
+    "geoCodeThis": "Norton%20College,%20Langton%20Road,%20Norton,%20Malton,%20North%20Yorkshire,%20YO17%209PT",
     "formatted_address": "Norton, Malton, North Yorkshire YO17 9PT, UK",
     "location": {
       "lat": 54.1255408,
@@ -294,7 +294,7 @@
   {
     "name": "The Norfolk Sportive 25/50/100",
     "date": "2016-07-23T23:00:00.000Z",
-    "geoCodeUrl": "Crusader Rugby Club , Hethersett,NR9 3NP",
+    "geoCodeThis": "Crusader Rugby Club , Hethersett,NR9 3NP",
     "formatted_address": "Little Melton, Norwich, Norfolk NR9 3NP, UK",
     "location": {
       "lat": 52.6119345,
@@ -305,8 +305,8 @@
     "name": "Wattage in the Wolds",
     "date": "2016-07-23T23:00:00.000Z",
     "geoCodeThis": "Riseholme Park, Lincoln LN2 2LG",
-    "formatted_address": "Riseholme Park, Riseholme, Lincoln, Lincolnshire LN2 2BJ, UK"
-    "location": {
+    "formatted_address": "Riseholme Park, Riseholme, Lincoln, Lincolnshire LN2 2BJ, UK",
+    "location" : {
       "lat": 53.268452,
       "lng": -0.5332007
     }
