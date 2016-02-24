@@ -1,5 +1,324 @@
-[{
-    "name":"Tommy Godwin Challenge",
-    "date":"2016-09-24T23:00:00.000Z",
-    "geoCodeThis":"Marie%20Curie Hospice,Marsh Lane, Solihull, West Midlands, B91 2PQ"
-}]
+[
+  {
+    "name": "Bucks Road Sportive",
+    "date": "2016-02-28T00:00:00.000Z",
+    "geoCodeThis": "Maple Lodge Cl, Maple Cross, Rickmansworth WD3 2SQ",
+    "formatted_address": "Maple Lodge Cl, Maple Cross, Rickmansworth, Hertfordshire WD3, UK",
+    "location" : {
+               "lat" : 51.623757,
+               "lng" : -0.507034
+            }
+  },
+  {
+    "name": "Puncheur Sportive",
+    "date": "2016-02-28T00:00:00.000Z",
+    "geoCodeThis": "Ditchling%20Recreation%20Ground,%20Ditchling",
+    "formatted_address" : "Ditchling Recreation Ground, Ditchling, Hassocks, East Sussex BN6, UK",
+    "location": {
+      "lat": 50.9190475,
+      "lng": -0.1064609
+    }
+  },
+
+  {
+    "name": "Tommy Godwin Challenge",
+    "date": "2016-09-24T23:00:00.000Z",
+    "geoCodeThis": "Marie%20Curie Hospice,Marsh Lane, Solihull, West Midlands, B91 2PQ",
+    "formatted_address": "Marsh Ln, Solihull, West Midlands B91 2PQ, UK",
+    "location" : {
+               "lat" : 52.4110605,
+               "lng" : -1.7623455
+            }
+  },
+  {
+    "name": "Mad March Hare Sportive 2016",
+    "date": "2016-03-06T00:00:00.000Z",
+    "geoCodeThis": "The Coppice Primary School, Worcestershire, 52-58 Shawhurst Ln, Hollywood, Wythall B47 5JN",
+    "formatted_address" : "58 Shawhurst Ln, Hollywood, Birmingham, Worcestershire B47 5JN, UK",
+    "location": {
+      "lat": 52.3900897,
+      "lng": -1.8776332
+    }
+  },
+  {
+    "name": "Autism Wessex Bike Ride 2016 (Cancelled)",
+    "date": "2016-03-13T00:00:00.000Z",
+    "geoCodeThis": "Portfield%20School,Parley%20Ln,%20Christchurch%20BH23%206BP",
+    "formatted_address" : "Christchurch, Dorset BH23 6BP, UK",
+    "location": {
+      "lat": 50.7805074,
+      "lng": -1.8639807
+    }
+  },
+  {
+    "name": "Cycling Weekly Surrey Hills Cyclone",
+    "date": "2016-03-20T00:00:00.000Z",
+    "geoCodeThis": "Friends%20Life,Pixham%20Ln,%20Dorking%20RH4%201QA",
+    "formatted_address": "Pixham Ln, Dorking, Surrey RH4, UK",
+    "location": {
+      "lat": 51.2434867,
+      "lng": -0.3213471
+    }
+  },
+  {
+    "name": "Race Harborough Festival of Cycling",
+    "date": "2016-04-02T23:00:00.000Z",
+    "geoCodeThis": "Robert%20Smyth%20Academy,Burnmill%20Road,%20Market%20Harborough,%20Leicestershire,%20LE16%207JG",
+    "formatted_address": "Burnmill Rd, Market Harborough, Leicestershire LE16 7JG, UK",
+    "location" : {
+               "lat" : 52.4866594,
+               "lng" : -0.9219436000000001
+            }
+  },
+  {
+    "name": "Heart of the Cotswolds (Cancelled)",
+    "date": "2016-04-16T23:00:00.000Z",
+    "geoCodeThis": "Broadway United Football Club,Childswickham Road,Broadway,Worcestershire,WR12 7HA",
+    "formatted_address": "Childswickham Rd, Broadway, Worcestershire WR12 7HA, UK",
+    "location" : {
+               "lat" : 52.03728899999999,
+               "lng" : -1.8694789
+            }
+  },
+  {
+    "name": "St Andrews Hospice Sportive",
+    "date": "2016-04-16T23:00:00.000Z",
+    "geoCodeThis": "1%20Ardgoil%20Drive,%20Cumbernauld,%20North%20Lanarkshire,%20G68%201NE",
+    "formatted_address": "1 Ardgoil Dr, Cumbernauld, Glasgow, North Lanarkshire G68 9NE, UK",
+    "location" : {
+               "lat" : 55.94473010000001,
+               "lng" : -4.0370507
+            }
+  },
+  {
+    "name": "The Tour of Pembrokeshire",
+    "date": "2016-04-22T23:00:00.000Z",
+    "geoCodeThis": "Crug Glas,Crug Glas Country House Hotel , Nr. St. Davids, Pembrokeshire, SA62 6XX",
+    "formatted_address": "Solva, Haverfordwest, Pembrokeshire SA62 6XX, UK",
+    "location": {
+      "lat": 51.91398239999999,
+      "lng": -5.1832903
+    }
+  },
+  {
+    "name": "The Dare2b Rutland CiCLE Tour",
+    "date": "2016-04-22T23:00:00.000Z",
+    "geoCodeThis": "Normanton Car Park, Edith Weston, Rutland LE15 8HD",
+    "formatted_address": "Normanton Car Park Rutland Water, Edith Weston, Oakham, Rutland LE15 8HD, UK",
+    "location": {
+      "lat": 52.63900289999999,
+      "lng": -0.6275428000000001
+    }
+  },
+  {
+    "name": "Lagan's Foundation Remembrance Cycle Challenge 2016",
+    "date": "2016-04-23T23:00:00.000Z",
+    "geoCodeThis": "Rivington Bowling Green ,Horrobin Lane, Horwich , Bolton, Lancs, BL6 7SE",
+    "formatted_address": "Bolton, Lancashire BL6 7SE, UK",
+    "location": {
+      "lat": 53.6249326,
+      "lng": -2.5690213
+    }
+  },
+  {
+    "name": "Pedal the Park Sportive 2016",
+    "date": "2016-04-23T23:00:00.000Z",
+    "geoCodeThis": "Castle Semple Visitor Centre ,Lochlip Road, Lochwinnoch, Renfrewshire, PA12 4EA",
+    "formatted_address": "Lochlip Rd, Lochwinnoch, Renfrewshire PA12 4AF, UK",
+    "location": {
+      "lat": 55.7931558,
+      "lng": -4.6250567
+    }
+  },
+  {
+    "name": "Red Skye Cycle Tours Spring Sportive 2016",
+    "date": "2016-04-23T23:00:00.000Z",
+    "geoCodeThis": "Holmsley%20Camp%20Site,Forest%20Rd,%20Christchurch%20BH23%207EQ",
+    "formatted_address": "Holmsley Campsite, Forest Rd, Burley, Christchurch, Hampshire BH23 7EQ, UK",
+    "location": {
+      "lat": 50.7929487,
+      "lng": -1.694612
+    }
+  },
+  {
+    "name": "Wrap around Lincoln",
+    "date": "2016-05-07T23:00:00.000Z",
+    "geoCodeThis": "Riseholme%20Park,%20Lincoln%20LN2%202LG",
+    "formatted_address": "Riseholme Park, Riseholme, Lincoln, Lincolnshire LN2 2BJ, UK",
+    "location": {
+      "lat": 53.268452,
+      "lng": -0.5332007
+    }
+  },
+  {
+    "name": "Cycling Weekly South Downs Spring",
+    "date": "2016-05-14T23:00:00.000Z",
+    "geoCodeUrl": "Plumpton Race Course, Plumpton, East Sussex"
+    "formatted_address": "Plumpton Racecourse Ltd, Plumpton, Lewes, East Sussex BN7 3AL, UK",
+    "location": {
+      "lat": 50.9245329,
+      "lng": -0.0644793
+    }
+  },
+  {
+    "name": "Sheffield-Esteli Society Bike Ride",
+    "date": "2016-05-14T23:00:00.000Z",
+    "geoCodeThis": "Hallamshire%20Tennis%20Club,716%20Ecclesall%20Rd,%20Sheffield%20S11%208TA",
+    "formatted_address": "Hallamshire Tennis & Squash, Club 716 Ecclesall Rd, Sheffield, South Yorkshire S11 8TA, UK",
+    "location": {
+      "lat": 53.3674218,
+      "lng": -1.5033796
+    }
+  },
+  {
+    "name": "BTRS Big Bike Ride",
+    "date": "2016-05-20T23:00:00.000Z",
+    "geoCodeThis": "Grange Park, Old Boston Rd, Wetherby, West Yorkshire LS22 5DY",
+    "formatted_address": "Boston Rd, Wetherby, West Yorkshire LS22, UK",
+    "location": {
+      "lat": 53.92380379999999,
+      "lng": -1.3854374
+    }
+  },
+  {
+    "name": "Wootton Riders",
+    "date": "2016-05-21T23:00:00.000Z",
+    "geoCodeThis": "Castle Road, Wootton, Woodstock, Oxfordshire, OX20 1EQ",
+    "formatted_address": "Castle Rd, Wootton, Woodstock, Oxfordshire OX20 1EQ, UK",
+    "location": {
+      "lat": 51.87780110000001,
+      "lng": -1.3648922
+    }
+  },
+  {
+    "name": "Evans RideIT King Of The Downs Sportive",
+    "date": "2016-06-11T23:00:00.000Z",
+    "geoCodeThis": "Evans%20Cycles,Camino%20Park,%20James%20Watt%20Way,%20Crawley,%20West%20Sussex%20RH10%209TZ",
+    "formatted_address": "James Watt Way, Crawley, West Sussex RH10 9TZ, UK",
+    "location": {
+      "lat": 51.14154809999999,
+      "lng": -0.1670116
+    }
+  },
+  {
+    "name": "Le Tour de Sandwich",
+    "date": "2016-06-11T23:00:00.000Z",
+    "geoCodeThis": "Locks Cycles,28 King Street, Sandwich, Kent, CT13 9BT",
+    "formatted_address": "28 King St, Sandwich, Kent CT13 9BT, UK",
+    "location": {
+      "lat": 51.2741689,
+      "lng": 1.3405693
+    }
+  },
+  {
+    "name": "Life's a Gas - JLN Charity Cycle Ride for Zoes place Coventry",
+    "date": "2016-06-17T23:00:00.000Z",
+    "geoCodeThis": "Zoes Place Coventry,Easter Way, Ash Green, Coventry, West Midlands, CV7 9JG",
+    "formatted_address": "Coventry, Warwickshire CV7 9JG, UK",
+    "location": {
+      "lat": 52.4554854,
+      "lng": -1.508016
+    }
+  },
+  {
+    "name": "Trossachs Ton",
+    "date": "2016-06-18T23:00:00.000Z",
+    "geoCodeThis": "Stirling High School, Torbrex Farm Rd, Stirling, FK8 2PA",
+    "formatted_address": "Torbrex Farm Rd, Stirling, Stirling FK8 2PA, UK",
+    "location": {
+      "lat": 56.1049112,
+      "lng": -3.9468839
+    }
+  },
+  {
+    "name": "Bradwell Hill Billy",
+    "date": "2016-06-25T23:00:00.000Z",
+    "geoCodeThis": "bradwell sport club, S33 9ST",
+    "formatted_address": "Bradwell Sports Club, Hope Valley, Derbyshire S33, UK",
+    "location": {
+      "lat": 53.3337999,
+      "lng": -1.7374127
+    }
+  },
+  {
+    "name": "The Broken Spoke 200",
+    "date": "2016-07-01T23:00:00.000Z",
+    "geoCodeThis": "The Catholic High School, Old Wrexham Road, Chester, Cheshire, CH4 7HS"
+    "formatted_address": "The Catholic High School, Old Wrexham Rd, Chester, Cheshire West and Chester CH4 7HS, UK",
+    "location": {
+      "lat": 53.17910819999999,
+      "lng": -2.8924177
+    }
+  },
+  {
+    "name": "Le Cote de Holme Moss Sportive Weekend",
+    "date": "2016-07-01T23:00:00.000Z",
+    "geoCodeThis": "The%20Bridge%20Public%20House,%20Woodhead%20Road,%20Holmbridge,%20Holmfirth,%20West%20Yorkshire,%20HD92NQ",
+    "formatted_address": "Woodhead Rd, Holmbridge, Holmfirth, West Yorkshire HD9 2NQ, UK",
+    "location": {
+      "lat": 53.5578206,
+      "lng": -1.8187684
+    }
+  },
+  {
+    "name": "The Lapierre White Roads Classic 2016",
+    "date": "2016-07-02T23:00:00.000Z",
+    "geoCodeThis": "Sheepcot Recreation Ground,Gatehampton Road   , Goring-on-Thames, Oxfordshire , RG8 0EN",
+    "formatted_address": "Gatehampton Rd, Goring, Reading, Oxfordshire RG8 0EN, UK",
+    "location": {
+      "lat": 51.519226,
+      "lng": -1.1307287
+    }
+  },
+  {
+    "name": "The Louth Sportive",
+    "date": "2016-07-09T23:00:00.000Z",
+    "geoCodeThis": "The%20Louth%20Tennis%20and%20Sports%20Centre,Scarborough%20Rd,%20Louth%20LN11%200WD",
+    "formatted_address": "Scarborough Rd, Louth, Lincolnshire LN11, UK",
+    "location": {
+      "lat": 53.38461470000001,
+      "lng": -0.0102978
+    }
+
+  },
+  {
+    "name": "Yorkshire Wolds Cycle Challenge 2016",
+    "date": "2016-07-15T23:00:00.000Z",
+    "geoCodeUrl": "Norton%20College,%20Langton%20Road,%20Norton,%20Malton,%20North%20Yorkshire,%20YO17%209PT",
+    "formatted_address": "Norton, Malton, North Yorkshire YO17 9PT, UK",
+    "location": {
+      "lat": 54.1255408,
+      "lng": -0.7829811999999999
+    }
+  },
+  {
+    "name": "The Norfolk Sportive 25/50/100",
+    "date": "2016-07-23T23:00:00.000Z",
+    "geoCodeUrl": "Crusader Rugby Club , Hethersett,NR9 3NP",
+    "formatted_address": "Little Melton, Norwich, Norfolk NR9 3NP, UK",
+    "location": {
+      "lat": 52.6119345,
+      "lng": 1.1804879
+    }
+  },
+  {
+    "name": "Wattage in the Wolds",
+    "date": "2016-07-23T23:00:00.000Z",
+    "geoCodeThis": "Riseholme Park, Lincoln LN2 2LG",
+    "formatted_address": "Riseholme Park, Riseholme, Lincoln, Lincolnshire LN2 2BJ, UK"
+    "location": {
+      "lat": 53.268452,
+      "lng": -0.5332007
+    }
+  },
+  {
+    "name": "Pinewood Climbs",
+    "date": "2016-09-03T23:00:00.000Z",
+    "geoCodeThis": "Holt%20Rugby%20Club,%20Bridge%20Rd,%20Holt%20NR25%206QT",
+    "formatted_address": "High Kelling, Holt, Norfolk NR25 6QT, UK",
+    "location" : {
+               "lat" : 52.91764569999999,
+               "lng" : 1.1189775
+            }
+  }
+]
