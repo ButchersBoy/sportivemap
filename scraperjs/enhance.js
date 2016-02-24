@@ -98,6 +98,9 @@ function logGeoLocationFail(event, geoCodeUrl, failedEventItems) {
 }
 
 function getNextGeoLoc(events, index, failedEventItems, resolve) {	    
+
+	console.log("item " + index);
+
     var urlPrefix = "https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyCMReQsiiLJ4_q-aIiqzunOwwNXsr29sIo&address=";
     var urlSuffix = overridesMap.get(events[index].name);
     if (urlSuffix == undefined)
@@ -140,7 +143,7 @@ function getNextGeoLoc(events, index, failedEventItems, resolve) {
 }
 
 //332 will fail for quick testing
-getNextGeoLoc(filteredEvents, 332, new Array(), function(events, failedEventItems) {
+getNextGeoLoc(filteredEvents, 0, new Array(), function(events, failedEventItems) {
 	fs.writeFileSync('data-uk.json', JSON.stringify(events), 'utf8');
 	fs.writeFileSync('data-uk-failed.json', JSON.stringify(failedEventItems), 'utf8');
 	console.log("Geo locating finished.");
