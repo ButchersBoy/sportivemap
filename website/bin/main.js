@@ -28,9 +28,8 @@ class Sportive extends React.Component {
   }
   render() {                        
     return (
-        <div>
-            <div>{this.props.item.name}</div>
-            <div>{this.props.item.date}</div>
+        <div className={"ui centered card"}>
+            <SportiveInfoWindow item={this.props.item}/>
         </div>
     );
   }

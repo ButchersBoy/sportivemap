@@ -14,5 +14,9 @@
   margin-top: 8px;
 }
 #sportiveList {
-  margin-top: 0px;  
+  margin-top: 40px;  
+  margin-left: 8px;  
+}
+.ui .card {
+    padding: 8px;
 }

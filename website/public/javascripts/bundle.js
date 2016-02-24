@@ -43,17 +43,8 @@ class Sportive extends React.Component {
   render() {
     return React.createElement(
       'div',
-      null,
-      React.createElement(
-        'div',
-        null,
-        this.props.item.name
-      ),
-      React.createElement(
-        'div',
-        null,
-        this.props.item.date
-      )
+      { className: "ui centered card" },
+      React.createElement(SportiveInfoWindow, { item: this.props.item })
     );
   }
 }
