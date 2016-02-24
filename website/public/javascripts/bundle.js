@@ -5,12 +5,40 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var Moment = require('moment');
 
+class SportiveInfoWindow extends React.Component {
+  render() {
+    return React.createElement(
+      'div',
+      null,
+      React.createElement(
+        'div',
+        null,
+        this.props.item.name
+      ),
+      React.createElement(
+        'div',
+        null,
+        Moment(this.props.item.date).format("dddd, MMMM Do YYYY")
+      ),
+      React.createElement(
+        'div',
+        null,
+        React.createElement(
+          'a',
+          { href: this.props.item.indexerUrl, target: '_blank' },
+          'Website'
+        )
+      )
+    );
+  }
+}
+
 class Sportive extends React.Component {
   componentWillUnmount() {
     this.marker.setMap(null);
   }
   componentDidMount() {
-    this.marker = this.props.mapContainer.addMarker(this.props.item.geometryLocation, this.props.item.name);
+    this.marker = this.props.mapContainer.addMarker(this.props.item.geometryLocation, this.props.index, el => ReactDOM.render(React.createElement(SportiveInfoWindow, { item: this.props.item }), el));
   }
   render() {
     return React.createElement(
@@ -33,7 +61,7 @@ class Sportive extends React.Component {
 class SportiveList extends React.Component {
   render() {
     var nodes = this.props.data.map(function (sportive, index) {
-      return React.createElement(Sportive, { key: index, item: sportive, mapContainer: this.props.mapContainer });
+      return React.createElement(Sportive, { key: index, index: index, item: sportive, mapContainer: this.props.mapContainer });
     }, this);
     return React.createElement(
       'div',
@@ -105,15 +133,19 @@ class MapContainer {
     };
     this.map = new google.maps.Map(document.getElementById(elementId), mapProps);
   }
-  addMarker(geo, name) {
+  addMarker(geo, index, renderer) {
     var marker = new google.maps.Marker({
       position: new google.maps.LatLng(geo.lat, geo.lng)
     });
-    var infowindow = new google.maps.InfoWindow({
-      content: '<div>' + name + '</div>'
+    var id = "info-window-" + index;
+    var infoWindow = new google.maps.InfoWindow({
+      content: '<div id="' + id + '"></div>'
     });
-    marker.addListener('click', function () {
-      infowindow.open(this.map, marker);
+    marker.addListener('click', () => {
+      if (this.activeInfoWindow) this.activeInfoWindow.close();
+      infoWindow.open(this.map, marker);
+      renderer(document.getElementById(id));
+      this.activeInfoWindow = infoWindow;
     });
 
     marker.setMap(this.map);
@@ -141,9 +173,6 @@ class Store {
     this.master.forEach(function (element) {
       if (filter(element.date)) filtered.push(element);
     }, this);
-    console.log("filter: " + filter);
-    console.log("index: " + index);
-    console.log("filtered to " + filtered.length);
     return filtered;
   }
 }
