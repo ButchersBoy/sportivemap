@@ -2,14 +2,20 @@
 
 var React = require('react');
 var ReactDOM = require('react-dom');
+var Moment = require('moment');
 
 class Sportive extends React.Component {
-  render() {        
-    this.props.mapContainer.addMarker(this.props.item.geometryLocation, this.props.item.name);        
-    
+  componentWillUnmount() {
+    this.marker.setMap(null);
+  }
+  componentDidMount() {
+    this.marker = this.props.mapContainer.addMarker(this.props.item.geometryLocation, this.props.item.name);
+  }
+  render() {                        
     return (
         <div>
-            <div>{this.props.item.name} - {this.props.item.date}</div>
+            <div>{this.props.item.name}</div>
+            <div>{this.props.item.date}</div>
         </div>
     );
   }
@@ -30,7 +36,7 @@ class DateFilterItem extends React.Component {
     this.handleButtonClick = this.handleButtonClick.bind(this);
   }
   handleButtonClick(e) {
-    this.props.onClick(this.props.logicalIndex);
+    this.props.onClick(this.props.logicalIndex, this.props.filter);
   }
   render() {
     var className = "ui toggle button";
@@ -49,22 +55,24 @@ class DateFilter extends React.Component {
     this.handleDateFilterItemClick = this.handleDateFilterItemClick.bind(this);
     this.state = {selectedIndex : 3}
   }
-  handleDateFilterItemClick(logicalIndex) {
+  handleDateFilterItemClick(logicalIndex, filter) {
+    this.props.onFilterSelected(filter);
     this.setState({selectedIndex : logicalIndex});    
   }
-  render() {
-    console.log("Rendering..."+this.state.selectedIndex);
+  render() {    
+    var isWithin = (d, m) => Moment(d).isSameOrBefore(m); 
     var nodes = [
-      ["1 Week"],
-      ["2 Weeks"],
-      ["1 Month"],
-      ["3 Months"],
-      ["6 Months"],
-      ["9 Months"],
-      ["1 Year"]
+      ["1 Week", d => isWithin(d, Moment().add(1, "w"))],
+      ["2 Weeks", d => isWithin(d, Moment().add(2, "w"))],
+      ["1 Month", d => isWithin(d, Moment().add(1, "M"))],
+      ["3 Months", d => isWithin(d, Moment().add(3, "M"))],
+      ["6 Months", d => isWithin(d, Moment().add(6, "M"))],
+      ["9 Months", d => isWithin(d, Moment().add(9, "M"))],
+      ["1 Year", d => isWithin(d, Moment().add(1, "y"))]
     ].map((item, index) => {
       return (<DateFilterItem description={item[0]} key={index} 
                               logicalIndex={index}
+                              filter={item[1]}
                               isSelected={this.state.selectedIndex >= index}
                               onClick={this.handleDateFilterItemClick} />);
     });         
@@ -80,8 +88,8 @@ class DateFilter extends React.Component {
 class MapContainer {
   constructor(elementId, geo) {
     	var mapProps = {
-        center:new google.maps.LatLng(51.508742,-0.120850),
-        zoom:5,
+        center:new google.maps.LatLng(54.0684078,-2.0086898),
+        zoom:6,
         mapTypeId:google.maps.MapTypeId.ROADMAP,
         disableDefaultUI:true,
         panControl:true,
@@ -105,7 +113,9 @@ class MapContainer {
       infowindow.open(this.map, marker);
     })
     
-    marker.setMap(this.map);    
+    marker.setMap(this.map); 
+    
+    return marker;   
   }    
 }
 
@@ -113,14 +123,26 @@ class Store {
   constructor(data) {
     this.master = data;
   }
-  filter(maxDate) {
+  filter(dateFilter) {
+    
+    if (dateFilter)
+    {      
+      var filtered = new Array();
+      this.master.forEach(function(element) {
+        if (dateFilter(element.date))
+          filtered.push(element);
+      }, this);
+      return filtered;      
+    }
+    
     return this.master;
   }  
 }
 
-function renderAllSportives(store, mapContainer, maxDate) {
-  
-  var data = store.filter(maxDate);
+function renderAllSportives(store, mapContainer, filter) {
+  console.log(filter);
+        
+  var data = store.filter(filter);
   
   ReactDOM.render(
         <SportiveList data={data} mapContainer={mapContainer} />,
@@ -137,7 +159,7 @@ function initMap() {
       renderAllSportives(store, mapContainer);
       
       ReactDOM.render(
-        <DateFilter />,
+        <DateFilter onFilterSelected={f => renderAllSportives(store, mapContainer, f) } />,
         document.getElementById('dateFilter')        
       );
     });  
