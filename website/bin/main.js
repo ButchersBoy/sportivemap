@@ -24,8 +24,6 @@ class SportiveList extends React.Component {
   }
 }
 
-
-
 class DateFilterItem extends React.Component {
   constructor(props) {
     super(props);
@@ -111,14 +109,33 @@ class MapContainer {
   }    
 }
 
+class Store {
+  constructor(data) {
+    this.master = data;
+  }
+  filter(maxDate) {
+    return this.master;
+  }  
+}
+
+function renderAllSportives(store, mapContainer, maxDate) {
+  
+  var data = store.filter(maxDate);
+  
+  ReactDOM.render(
+        <SportiveList data={data} mapContainer={mapContainer} />,
+        document.getElementById('sportiveList')
+      );
+}
+
 function initMap() {
   var mapContainer = new MapContainer("googleMap", { lat: 51.508742, lng: -0.120850});
   $.post("api/list/uk")
     .done(function(data) {
-      ReactDOM.render(
-        <SportiveList data={data} mapContainer={mapContainer} />,
-        document.getElementById('sportiveList')
-      );
+      
+      var store = new Store(data);
+      renderAllSportives(store, mapContainer);
+      
       ReactDOM.render(
         <DateFilter />,
         document.getElementById('dateFilter')        
