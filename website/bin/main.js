@@ -139,7 +139,8 @@ class MapContainer {
   }
   addMarker(geo, index, renderer) {    
     var marker=new google.maps.Marker({
-      position:new google.maps.LatLng(geo.lat, geo.lng)
+      position:new google.maps.LatLng(geo.lat, geo.lng),
+      icon:'./images/coggy32.png'
     });
     var id = "info-window-" + index;
     var infoWindow = new google.maps.InfoWindow({
