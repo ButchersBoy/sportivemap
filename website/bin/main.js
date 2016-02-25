@@ -125,7 +125,7 @@ class MapContainer {
     	var mapProps = {
         center:new google.maps.LatLng(54.0684078,-2.0086898),
         zoom:6,
-        mapTypeId:google.maps.MapTypeId.ROADMAP,
+        mapTypeId:google.maps.MapTypeId.TERRAIN,
         disableDefaultUI:true,
         panControl:true,
         zoomControl:true,
