@@ -134,8 +134,13 @@ class MapContainer {
         streetViewControl:true,
         overviewMapControl:true,
         rotateControl:true
-      };
-    this.map=new google.maps.Map(document.getElementById(elementId), mapProps);    
+      };      
+      
+    this.map=new google.maps.Map(document.getElementById(elementId), mapProps);
+    window.setTimeout(() => {
+      google.maps.event.trigger(this.map, "resize");  
+    }, 1000);
+        
   }
   addMarker(geo, index, renderer) {    
     var marker=new google.maps.Marker({
@@ -206,11 +211,10 @@ function renderAllSportives(store, mapContainer, filterIndex) {
       );
 }
 
-function initMap() {
-  var mapContainer = new MapContainer("googleMap", { lat: 51.508742, lng: -0.120850});
+function initMap() {  
   $.post("api/list/uk")
     .done(function(data) {
-      
+      var mapContainer = new MapContainer("googleMap", { lat: 51.508742, lng: -0.120850});
       let store = new Store(data);
       let filterIndex = 2;
       renderAllSportives(store, mapContainer, filterIndex);

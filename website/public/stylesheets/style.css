@@ -2,6 +2,12 @@
     margin-top: 8px;
     margin-bottom: 0px !important;
 }
+.pusher {
+    height: 100%;
+}
+.ui.container {
+    height: 100%;
+}
 #listButton {
     margin-top: 12px;
 }

@@ -29,22 +29,24 @@
 <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
 <meta name="theme-color" content="#ffffff">
 </head>
-<body>				    
+<body>				        
     <div class="ui sidebar">            
         <div id="sportiveList"></div>
     </div>
-    <div class="ui container">
-        <div class="header">                
-            <h1>Sportive Map</h1>            
-            <span>Sportives in the next:</span>
-            <div id="dateFilter"></div>
-            <div class="item clickable" id="listButton">
-                <i class="sidebar icon"></i>
-                List
+    <div class="pusher">
+        <div class="ui container">
+            <div class="header">                
+                <h1>Sportive Map</h1>            
+                <span>Sportives in the next:</span>
+                <div id="dateFilter"></div>
+                <div class="item clickable" id="listButton">
+                    <i class="sidebar icon"></i>
+                    List
+                </div>
             </div>
-        </div>
-        <div id="googleMap"></div>
-    </div>        	
+            <div id="googleMap"></div>            
+        </div>        	
+    </div>
     <script src="javascripts/bundle.js"></script>
     <script>
         $('#listButton').click(function(e) {

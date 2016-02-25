@@ -22607,35 +22607,96 @@ module.exports = require('./lib/React');
 },{"./lib/React":54}],160:[function(require,module,exports){
 "use strict";
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Moment = require('moment');
 
-class SportiveInfoCard extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleMarkerClick = this.handleMarkerClick.bind(this);
+var SportiveInfoCard = function (_React$Component) {
+  _inherits(SportiveInfoCard, _React$Component);
+
+  function SportiveInfoCard(props) {
+    _classCallCheck(this, SportiveInfoCard);
+
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(SportiveInfoCard).call(this, props));
+
+    _this.handleMarkerClick = _this.handleMarkerClick.bind(_this);
+    return _this;
   }
-  handleMarkerClick() {
-    this.props.onMarkerClick();
-  }
-  render() {
-    return React.createElement(
-      'div',
-      { className: "ui centered card" },
-      React.createElement(
+
+  _createClass(SportiveInfoCard, [{
+    key: 'handleMarkerClick',
+    value: function handleMarkerClick() {
+      this.props.onMarkerClick();
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      return React.createElement(
         'div',
-        { className: "content clickable", onClick: this.handleMarkerClick },
-        React.createElement('i', { className: "right floated marker icon" }),
+        { className: "ui centered card" },
+        React.createElement(
+          'div',
+          { className: "content clickable", onClick: this.handleMarkerClick },
+          React.createElement('i', { className: "right floated marker icon" }),
+          React.createElement(
+            'div',
+            { className: "header" },
+            this.props.item.name
+          )
+        ),
+        React.createElement(
+          'div',
+          { className: "content" },
+          React.createElement(
+            'div',
+            null,
+            Moment(this.props.item.date).format("dddd, MMMM Do YYYY")
+          ),
+          React.createElement(
+            'div',
+            null,
+            React.createElement(
+              'a',
+              { href: this.props.item.indexerUrl, target: '_blank' },
+              'Website'
+            )
+          )
+        )
+      );
+    }
+  }]);
+
+  return SportiveInfoCard;
+}(React.Component);
+
+var SportiveInfoWindow = function (_React$Component2) {
+  _inherits(SportiveInfoWindow, _React$Component2);
+
+  function SportiveInfoWindow() {
+    _classCallCheck(this, SportiveInfoWindow);
+
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(SportiveInfoWindow).apply(this, arguments));
+  }
+
+  _createClass(SportiveInfoWindow, [{
+    key: 'render',
+    value: function render() {
+      return React.createElement(
+        'div',
+        { className: "ui" },
         React.createElement(
           'div',
           { className: "header" },
           this.props.item.name
-        )
-      ),
-      React.createElement(
-        'div',
-        { className: "content" },
+        ),
         React.createElement(
           'div',
           null,
@@ -22650,130 +22711,179 @@ class SportiveInfoCard extends React.Component {
             'Website'
           )
         )
-      )
-    );
-  }
-}
+      );
+    }
+  }]);
 
-class SportiveInfoWindow extends React.Component {
-  render() {
-    return React.createElement(
-      'div',
-      { className: "ui" },
-      React.createElement(
+  return SportiveInfoWindow;
+}(React.Component);
+
+var Sportive = function (_React$Component3) {
+  _inherits(Sportive, _React$Component3);
+
+  function Sportive(props) {
+    _classCallCheck(this, Sportive);
+
+    var _this3 = _possibleConstructorReturn(this, Object.getPrototypeOf(Sportive).call(this, props));
+
+    _this3.handleCardMarkerClick = _this3.handleCardMarkerClick.bind(_this3);
+    return _this3;
+  }
+
+  _createClass(Sportive, [{
+    key: 'handleCardMarkerClick',
+    value: function handleCardMarkerClick() {
+      this.props.mapContainer.panTo(this.marker);
+      google.maps.event.trigger(this.marker, 'click');
+    }
+  }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      this.marker.setMap(null);
+    }
+  }, {
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      var _this4 = this;
+
+      this.marker = this.props.mapContainer.addMarker(this.props.item.geometryLocation, this.props.index, function (el) {
+        return ReactDOM.render(React.createElement(SportiveInfoWindow, { item: _this4.props.item }), el);
+      });
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      return React.createElement(SportiveInfoCard, { item: this.props.item, onMarkerClick: this.handleCardMarkerClick });
+    }
+  }]);
+
+  return Sportive;
+}(React.Component);
+
+var SportiveList = function (_React$Component4) {
+  _inherits(SportiveList, _React$Component4);
+
+  function SportiveList() {
+    _classCallCheck(this, SportiveList);
+
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(SportiveList).apply(this, arguments));
+  }
+
+  _createClass(SportiveList, [{
+    key: 'render',
+    value: function render() {
+      var nodes = this.props.data.map(function (sportive, index) {
+        return React.createElement(Sportive, { key: index, index: index, item: sportive, mapContainer: this.props.mapContainer });
+      }, this);
+      return React.createElement(
         'div',
-        { className: "header" },
-        this.props.item.name
-      ),
-      React.createElement(
-        'div',
-        null,
-        Moment(this.props.item.date).format("dddd, MMMM Do YYYY")
-      ),
-      React.createElement(
-        'div',
-        null,
+        { className: "sportiveListNodes" },
+        nodes
+      );
+    }
+  }]);
+
+  return SportiveList;
+}(React.Component);
+
+var DateFilterItem = function (_React$Component5) {
+  _inherits(DateFilterItem, _React$Component5);
+
+  function DateFilterItem(props) {
+    _classCallCheck(this, DateFilterItem);
+
+    var _this6 = _possibleConstructorReturn(this, Object.getPrototypeOf(DateFilterItem).call(this, props));
+
+    _this6.handleButtonClick = _this6.handleButtonClick.bind(_this6);
+    return _this6;
+  }
+
+  _createClass(DateFilterItem, [{
+    key: 'handleButtonClick',
+    value: function handleButtonClick(e) {
+      this.props.onClick(this.props.index, this.props.filter);
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this7 = this;
+
+      var className = "mini ui button";
+      if (this.props.isSelected) className += " positive";
+      return React.createElement(
+        'button',
+        { className: className, onClick: function onClick(e) {
+            return _this7.handleButtonClick(e);
+          } },
         React.createElement(
-          'a',
-          { href: this.props.item.indexerUrl, target: '_blank' },
-          'Website'
+          'span',
+          { className: "media-long" },
+          this.props.description
+        ),
+        React.createElement(
+          'span',
+          { className: "media-short" },
+          this.props.code
         )
-      )
-    );
-  }
-}
+      );
+    }
+  }]);
 
-class Sportive extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleCardMarkerClick = this.handleCardMarkerClick.bind(this);
-  }
-  handleCardMarkerClick() {
-    this.props.mapContainer.panTo(this.marker);
-    google.maps.event.trigger(this.marker, 'click');
-  }
-  componentWillUnmount() {
-    this.marker.setMap(null);
-  }
-  componentDidMount() {
-    this.marker = this.props.mapContainer.addMarker(this.props.item.geometryLocation, this.props.index, el => ReactDOM.render(React.createElement(SportiveInfoWindow, { item: this.props.item }), el));
-  }
-  render() {
-    return React.createElement(SportiveInfoCard, { item: this.props.item, onMarkerClick: this.handleCardMarkerClick });
-  }
-}
+  return DateFilterItem;
+}(React.Component);
 
-class SportiveList extends React.Component {
-  render() {
-    var nodes = this.props.data.map(function (sportive, index) {
-      return React.createElement(Sportive, { key: index, index: index, item: sportive, mapContainer: this.props.mapContainer });
-    }, this);
-    return React.createElement(
-      'div',
-      { className: "sportiveListNodes" },
-      nodes
-    );
-  }
-}
+var DateFilter = function (_React$Component6) {
+  _inherits(DateFilter, _React$Component6);
 
-class DateFilterItem extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleButtonClick = this.handleButtonClick.bind(this);
-  }
-  handleButtonClick(e) {
-    this.props.onClick(this.props.index, this.props.filter);
-  }
-  render() {
-    var className = "mini ui button";
-    if (this.props.isSelected) className += " positive";
-    return React.createElement(
-      'button',
-      { className: className, onClick: e => this.handleButtonClick(e) },
-      React.createElement(
-        'span',
-        { className: "media-long" },
-        this.props.description
-      ),
-      React.createElement(
-        'span',
-        { className: "media-short" },
-        this.props.code
-      )
-    );
-  }
-}
+  function DateFilter(props) {
+    _classCallCheck(this, DateFilter);
 
-class DateFilter extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleDateFilterItemClick = this.handleDateFilterItemClick.bind(this);
-    this.state = { selectedIndex: this.props.selectedIndex };
-  }
-  handleDateFilterItemClick(index) {
-    this.props.onFilterSelected(index);
-    this.setState({ selectedIndex: index });
-  }
-  render() {
-    var isWithin = (d, m) => Moment(d).isSameOrBefore(m);
-    var nodes = this.props.dateFilterOps.map((item, index) => {
-      return React.createElement(DateFilterItem, { description: item.description,
-        code: item.code,
-        key: index,
-        index: index,
-        isSelected: this.state.selectedIndex >= index,
-        onClick: this.handleDateFilterItemClick });
-    });
-    return React.createElement(
-      'div',
-      { className: "ui buttons" },
-      nodes
-    );
-  }
-}
+    var _this8 = _possibleConstructorReturn(this, Object.getPrototypeOf(DateFilter).call(this, props));
 
-class MapContainer {
-  constructor(elementId, geo) {
+    _this8.handleDateFilterItemClick = _this8.handleDateFilterItemClick.bind(_this8);
+    _this8.state = { selectedIndex: _this8.props.selectedIndex };
+    return _this8;
+  }
+
+  _createClass(DateFilter, [{
+    key: 'handleDateFilterItemClick',
+    value: function handleDateFilterItemClick(index) {
+      this.props.onFilterSelected(index);
+      this.setState({ selectedIndex: index });
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this9 = this;
+
+      var isWithin = function isWithin(d, m) {
+        return Moment(d).isSameOrBefore(m);
+      };
+      var nodes = this.props.dateFilterOps.map(function (item, index) {
+        return React.createElement(DateFilterItem, { description: item.description,
+          code: item.code,
+          key: index,
+          index: index,
+          isSelected: _this9.state.selectedIndex >= index,
+          onClick: _this9.handleDateFilterItemClick });
+      });
+      return React.createElement(
+        'div',
+        { className: "ui buttons" },
+        nodes
+      );
+    }
+  }]);
+
+  return DateFilter;
+}(React.Component);
+
+var MapContainer = function () {
+  function MapContainer(elementId, geo) {
+    var _this10 = this;
+
+    _classCallCheck(this, MapContainer);
+
     var mapProps = {
       center: new google.maps.LatLng(54.0684078, -2.0086898),
       zoom: 6,
@@ -22787,56 +22897,94 @@ class MapContainer {
       overviewMapControl: true,
       rotateControl: true
     };
+
     this.map = new google.maps.Map(document.getElementById(elementId), mapProps);
+    window.setTimeout(function () {
+      google.maps.event.trigger(_this10.map, "resize");
+    }, 1000);
   }
-  addMarker(geo, index, renderer) {
-    var marker = new google.maps.Marker({
-      position: new google.maps.LatLng(geo.lat, geo.lng),
-      icon: './images/coggy32.png'
-    });
-    var id = "info-window-" + index;
-    var infoWindow = new google.maps.InfoWindow({
-      content: '<div id="' + id + '"></div>'
-    });
-    marker.addListener('click', () => {
-      if (this.activeInfoWindow) this.activeInfoWindow.close();
-      infoWindow.open(this.map, marker);
-      renderer(document.getElementById(id));
-      this.activeInfoWindow = infoWindow;
-    });
 
-    marker.setMap(this.map);
+  _createClass(MapContainer, [{
+    key: 'addMarker',
+    value: function addMarker(geo, index, renderer) {
+      var _this11 = this;
 
-    return marker;
-  }
-  panTo(marker) {
-    this.map.panTo(marker.getPosition());
-  }
-}
+      var marker = new google.maps.Marker({
+        position: new google.maps.LatLng(geo.lat, geo.lng),
+        icon: './images/coggy32.png'
+      });
+      var id = "info-window-" + index;
+      var infoWindow = new google.maps.InfoWindow({
+        content: '<div id="' + id + '"></div>'
+      });
+      marker.addListener('click', function () {
+        if (_this11.activeInfoWindow) _this11.activeInfoWindow.close();
+        infoWindow.open(_this11.map, marker);
+        renderer(document.getElementById(id));
+        _this11.activeInfoWindow = infoWindow;
+      });
 
-class DateFilterOp {
-  constructor(description, code, filter) {
-    this.description = description;
-    this.code = code;
-    this.filter = filter;
-  }
-}
+      marker.setMap(this.map);
 
-class Store {
-  constructor(data) {
+      return marker;
+    }
+  }, {
+    key: 'panTo',
+    value: function panTo(marker) {
+      this.map.panTo(marker.getPosition());
+    }
+  }]);
+
+  return MapContainer;
+}();
+
+var DateFilterOp = function DateFilterOp(description, code, filter) {
+  _classCallCheck(this, DateFilterOp);
+
+  this.description = description;
+  this.code = code;
+  this.filter = filter;
+};
+
+var Store = function () {
+  function Store(data) {
+    _classCallCheck(this, Store);
+
     this.master = data;
-    var isWithin = (d, m) => Moment(d).isSameOrBefore(m);
-    this.dateFilterOps = [new DateFilterOp("1 Week", "1W", d => isWithin(d, Moment().add(1, "w"))), new DateFilterOp("2 Weeks", "2W", d => isWithin(d, Moment().add(2, "w"))), new DateFilterOp("1 Month", "1M", d => isWithin(d, Moment().add(1, "M"))), new DateFilterOp("3 Months", "3M", d => isWithin(d, Moment().add(3, "M"))), new DateFilterOp("6 Months", "6M", d => isWithin(d, Moment().add(6, "M"))), new DateFilterOp("9 Months", "9M", d => isWithin(d, Moment().add(9, "M"))), new DateFilterOp("1 Year", "1Y", d => isWithin(d, Moment().add(1, "y")))];
+    var isWithin = function isWithin(d, m) {
+      return Moment(d).isSameOrBefore(m);
+    };
+    this.dateFilterOps = [new DateFilterOp("1 Week", "1W", function (d) {
+      return isWithin(d, Moment().add(1, "w"));
+    }), new DateFilterOp("2 Weeks", "2W", function (d) {
+      return isWithin(d, Moment().add(2, "w"));
+    }), new DateFilterOp("1 Month", "1M", function (d) {
+      return isWithin(d, Moment().add(1, "M"));
+    }), new DateFilterOp("3 Months", "3M", function (d) {
+      return isWithin(d, Moment().add(3, "M"));
+    }), new DateFilterOp("6 Months", "6M", function (d) {
+      return isWithin(d, Moment().add(6, "M"));
+    }), new DateFilterOp("9 Months", "9M", function (d) {
+      return isWithin(d, Moment().add(9, "M"));
+    }), new DateFilterOp("1 Year", "1Y", function (d) {
+      return isWithin(d, Moment().add(1, "y"));
+    })];
   }
-  filter(index) {
-    let filter = this.dateFilterOps[index].filter;
-    var filtered = new Array();
-    this.master.forEach(function (element) {
-      if (filter(element.date)) filtered.push(element);
-    }, this);
-    return filtered;
-  }
-}
+
+  _createClass(Store, [{
+    key: 'filter',
+    value: function filter(index) {
+      var filter = this.dateFilterOps[index].filter;
+      var filtered = new Array();
+      this.master.forEach(function (element) {
+        if (filter(element.date)) filtered.push(element);
+      }, this);
+      return filtered;
+    }
+  }]);
+
+  return Store;
+}();
 
 function renderAllSportives(store, mapContainer, filterIndex) {
 
@@ -22846,16 +22994,17 @@ function renderAllSportives(store, mapContainer, filterIndex) {
 }
 
 function initMap() {
-  var mapContainer = new MapContainer("googleMap", { lat: 51.508742, lng: -0.120850 });
   $.post("api/list/uk").done(function (data) {
-
-    let store = new Store(data);
-    let filterIndex = 2;
+    var mapContainer = new MapContainer("googleMap", { lat: 51.508742, lng: -0.120850 });
+    var store = new Store(data);
+    var filterIndex = 2;
     renderAllSportives(store, mapContainer, filterIndex);
 
     ReactDOM.render(React.createElement(DateFilter, { dateFilterOps: store.dateFilterOps,
       selectedIndex: filterIndex,
-      onFilterSelected: fi => renderAllSportives(store, mapContainer, fi) }), document.getElementById('dateFilter'));
+      onFilterSelected: function onFilterSelected(fi) {
+        return renderAllSportives(store, mapContainer, fi);
+      } }), document.getElementById('dateFilter'));
   });
 }
 
