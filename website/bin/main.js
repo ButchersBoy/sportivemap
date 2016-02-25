@@ -136,11 +136,7 @@ class MapContainer {
         rotateControl:true
       };      
       
-    this.map=new google.maps.Map(document.getElementById(elementId), mapProps);
-    window.setTimeout(() => {
-      google.maps.event.trigger(this.map, "resize");  
-    }, 1000);
-        
+    this.map=new google.maps.Map(document.getElementById(elementId), mapProps);    
   }
   addMarker(geo, index, renderer) {    
     var marker=new google.maps.Marker({
