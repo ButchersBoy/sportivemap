@@ -11,24 +11,30 @@
 <script src="http://maps.googleapis.com/maps/api/js"></script>
 <link rel="stylesheet" type="text/css" href="stylesheets/style.css">
 </head>
-<body>							
-    <div class="ui grid">
-        <div class="four wide column">
-            <div class="altHeader">All the road cycling sportives in the UK.</div>
-            <div id="sportiveList"></div>    
-        </div>
-        <div class="twelve wide column">
-            <div>
-                <div class="header">
-                    <h1 style="display:inline">Sportive Map</h1>
-                    <div>Sportives in the next:</div>
-                </div>
-                <div id="dateFilter"></div>
-                <div id="googleMap"></div>
+<body>				    
+    <div class="ui sidebar">            
+        <div id="sportiveList"></div>
+    </div>
+    <div class="ui container">
+        <div class="header">                
+            <h1>Sportive Map</h1>
+            <span>Sportives in the next:</span>
+            <div id="dateFilter"></div>
+            <div class="item clickable" id="listButton">
+                <i class="sidebar icon"></i>
+                List
             </div>
         </div>
-    </div>	
-    <script src="javascripts/bundle.js"></script>	
+        <div id="googleMap"></div>
+    </div>        	
+    <script src="javascripts/bundle.js"></script>
+    <script>
+        $('#listButton').click(function(e) {
+           $('.ui.sidebar')
+            .sidebar('setting', 'transition', 'overlay')
+            .sidebar('toggle'); 
+        });
+    </script>	
 </body>
 </hmtl>
 	

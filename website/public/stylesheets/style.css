@@ -1,10 +1,9 @@
 .header h1 {
     margin-top: 8px;
-    margin-bottom: 2px !important;
+    margin-bottom: 0px !important;
 }
-.altHeader {
-    margin-top: 40px;
-    margin-left: 48px;
+#listButton {
+    margin-top: 12px;
 }
 #googleMap {
   margin-top: 16px;
@@ -16,14 +15,11 @@
   margin-top: 8px;
 }
 #sportiveList {
-    overflow: auto;
-    margin-top: 8px;  
-    margin-left: 8px;
-    height: 90%;  
-}
-.sportiveListNodes {
-    padding: 18px;
+    margin: 4px;
 }
 .clickable {
     cursor: hand;
+}
+.ui.sidebar {
+    background-color: white;
 }
