@@ -23,3 +23,28 @@
 .ui.sidebar {
     background-color: white;
 }
+.media-short {
+    display : none;
+}
+.media-long {
+    display: block;
+}
+.media-long span {
+    display: inline;
+}
+
+@media (max-width:600px)
+{
+    .media-long {
+        display: none;
+    }
+    .media-long span {
+        display: none;
+    }
+    .media-short {
+        display : block;
+    }
+    .media-short span {
+        display : inline;
+    }
+}

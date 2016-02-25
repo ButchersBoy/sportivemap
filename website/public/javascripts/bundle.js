@@ -179,12 +179,21 @@ class DateFilterItem extends React.Component {
     this.props.onClick(this.props.index, this.props.filter);
   }
   render() {
-    var className = "ui toggle button";
+    var className = "mini ui button";
     if (this.props.isSelected) className += " positive";
     return React.createElement(
       'button',
       { className: className, onClick: e => this.handleButtonClick(e) },
-      this.props.description
+      React.createElement(
+        'span',
+        { className: "media-long" },
+        this.props.description
+      ),
+      React.createElement(
+        'span',
+        { className: "media-short" },
+        this.props.code
+      )
     );
   }
 }
@@ -202,7 +211,9 @@ class DateFilter extends React.Component {
   render() {
     var isWithin = (d, m) => Moment(d).isSameOrBefore(m);
     var nodes = this.props.dateFilterOps.map((item, index) => {
-      return React.createElement(DateFilterItem, { description: item.description, key: index,
+      return React.createElement(DateFilterItem, { description: item.description,
+        code: item.code,
+        key: index,
         index: index,
         isSelected: this.state.selectedIndex >= index,
         onClick: this.handleDateFilterItemClick });
@@ -257,8 +268,9 @@ class MapContainer {
 }
 
 class DateFilterOp {
-  constructor(description, filter) {
+  constructor(description, code, filter) {
     this.description = description;
+    this.code = code;
     this.filter = filter;
   }
 }
@@ -267,7 +279,7 @@ class Store {
   constructor(data) {
     this.master = data;
     var isWithin = (d, m) => Moment(d).isSameOrBefore(m);
-    this.dateFilterOps = [new DateFilterOp("1 Week", d => isWithin(d, Moment().add(1, "w"))), new DateFilterOp("2 Weeks", d => isWithin(d, Moment().add(2, "w"))), new DateFilterOp("1 Month", d => isWithin(d, Moment().add(1, "M"))), new DateFilterOp("3 Months", d => isWithin(d, Moment().add(3, "M"))), new DateFilterOp("6 Months", d => isWithin(d, Moment().add(6, "M"))), new DateFilterOp("9 Months", d => isWithin(d, Moment().add(9, "M"))), new DateFilterOp("1 Year", d => isWithin(d, Moment().add(1, "y")))];
+    this.dateFilterOps = [new DateFilterOp("1 Week", "1W", d => isWithin(d, Moment().add(1, "w"))), new DateFilterOp("2 Weeks", "2W", d => isWithin(d, Moment().add(2, "w"))), new DateFilterOp("1 Month", "1M", d => isWithin(d, Moment().add(1, "M"))), new DateFilterOp("3 Months", "3M", d => isWithin(d, Moment().add(3, "M"))), new DateFilterOp("6 Months", "6M", d => isWithin(d, Moment().add(6, "M"))), new DateFilterOp("9 Months", "9M", d => isWithin(d, Moment().add(9, "M"))), new DateFilterOp("1 Year", "1Y", d => isWithin(d, Moment().add(1, "y")))];
   }
   filter(index) {
     let filter = this.dateFilterOps[index].filter;
