@@ -320,5 +320,37 @@
                "lat" : 52.91764569999999,
                "lng" : 1.1189775
             }
+  },
+  {
+    "name":"Cyclesense Tadcaster Sportive",
+    "date":"2016-04-09T23:00:00.000Z",
+    "geoCodeThis":"2 Westgate , Tadcaster , North Yorkshire , LS24 9AB",
+    "formatted_address" : "The Calcaria, 2 Westgate, Tadcaster, North Yorkshire LS24 9AB, UK",        
+    "location" : {
+               "lat" : 53.8850164,
+               "lng" : -1.2639383
+    }
+  },
+  {
+    "name":"NNUH Tour Sportive",
+    "date":"2016-09-10T23:00:00.000Z",
+    "geoCodeThis":"Colney Ln, Norwich NR4 7UY",
+    "formatted_address" : "Norfolk & Norwich University Hospital, Colney Ln, Norwich, Norfolk NR4 7UY, UK",        
+    "location" : {
+               "lat" : 52.6154832,"lng" : 1.2311028
+    }
+  }  ,
+  {
+    "name":"Wiggle Bitter Beast",
+    "date":"2016-11-13T00:00:00.000Z",    
+    "geoCodeThis":"Purbeck District, Dorset, UK",
+    "formatted_address" : "Purbeck District, Dorset, UK",
+    "location" : {
+               "lat" : 50.7020961,"lng" : -2.0965194
+            }    
   }
+  
+  
+  
+  
 ]

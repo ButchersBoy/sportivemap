@@ -51,7 +51,20 @@
                "lat" : 51.89034280000001,
                "lng" : 1.0284771
 			}
-		}																				
+		},
+		{
+			"name":"London Revolution",
+			"dateSummary":"14th-15th May, 2016",
+			"kind":"Cycle Sportive",
+			"locationSummary":"Lee Valley Athletics Centre, Edmonton N9 0AR",
+			"indexerUrl":"http://www.london-revolution.com/",
+			"date":"2016-05-14T00:00:00.000Z",
+			"formattedAddress":"Lee Valley Athletics Centre, London N9, UK",
+			"geometryLocation":{
+               "lat" : 51.6312382,
+               "lng" : -0.0373761
+			}
+		}																						
 	],
 	"removeEntries": [
 	]	
