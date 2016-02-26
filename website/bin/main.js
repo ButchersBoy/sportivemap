@@ -80,13 +80,12 @@ class DateFilterItem extends React.Component {
     this.props.onClick(this.props.index, this.props.filter);
   }
   render() {
-    var className = "mini ui button";
+    var className = "ui button";
     if (this.props.isSelected)
       className += " positive"; 
     return (
       <button className={className} onClick={e => this.handleButtonClick(e)}>
-        <span className={"media-long"}>{this.props.description}</span>
-        <span className={"media-short"}>{this.props.code}</span>
+        <span >{this.props.description}</span>        
       </button>);
   }
 }
@@ -103,18 +102,33 @@ class DateFilter extends React.Component {
   }
   render() {    
     var isWithin = (d, m) => Moment(d).isSameOrBefore(m); 
-    var nodes = this.props.dateFilterOps.map((item, index) => {
-      return (<DateFilterItem description={item.description} 
-                              code={item.code}
+    var bigNodes = this.props.dateFilterOps.map((item, index) => {
+      return (<DateFilterItem description={item.description}                               
+                              key={index} 
+                              index={index}
+                              isSelected={this.state.selectedIndex >= index}
+                              onClick={this.handleDateFilterItemClick} />);
+    });   
+    var littleNodes = this.props.dateFilterOps.map((item, index) => {
+      return (<DateFilterItem description={item.code}
                               key={index} 
                               index={index}
                               isSelected={this.state.selectedIndex >= index}
                               onClick={this.handleDateFilterItemClick} />);
     });         
     return (
-      <div className={"ui buttons"}>
-        {nodes}
-      </div>      
+      <div>
+        <div className={"media-long"}>
+          <div className={"ui buttons"}>
+            {bigNodes}
+          </div>
+        </div>
+        <div className={"media-short"}>
+          <div className={"mini ui buttons"}>
+            {littleNodes}
+          </div>
+        </div>    
+      </div>  
     );    
   }  
 } 
