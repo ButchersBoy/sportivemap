@@ -25,6 +25,7 @@
 }
 .clickable {
     cursor: hand;
+    cursor: pointer; 
 }
 .ui.sidebar {
     background-color: white;
