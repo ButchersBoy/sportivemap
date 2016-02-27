@@ -4,6 +4,11 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var Moment = require('moment');
 
+import { createStore } from 'redux';
+import app from './reducers';
+import { setSideBarVisibility, Visibility } from './actions'
+let store =  createStore(app);
+
 class SportiveInfoCard extends React.Component {
     constructor(props) {
         super(props);
@@ -239,4 +244,16 @@ function initMap() {
 }
 
 google.maps.event.addDomListener(window, 'load', initMap);
+
+
+
+
+let unsubscribe = store.subscribe(() =>
+  console.log(store.getState())
+)
+store.dispatch(setSideBarVisibility(Visibility.SHOW))
+store.dispatch(setSideBarVisibility(Visibility.HIDE))
+store.dispatch(setSideBarVisibility(Visibility.SHOW))
+
+unsubscribe()
 
