@@ -2,8 +2,7 @@ import { combineReducers }  from 'redux';
 import {  SET_SIDEBAR_VISIBILITY, Visibility} from '../actions/index';
 const { HIDE } = Visibility;
 
-function sideBarVisibility(state = HIDE, action)  {    
-    console.log("action " + action)
+function sideBarVisibility(state = HIDE, action)  {        
     switch (action.type) {
         case SET_SIDEBAR_VISIBILITY:
             return action.visibility;

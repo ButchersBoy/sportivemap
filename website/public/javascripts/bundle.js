@@ -24568,18 +24568,14 @@ var _SideBarLink2 = _interopRequireDefault(_SideBarLink);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var mapStateToProps = function mapStateToProps(state, ownProps) {
-    console.log(state);
-    return {
-        isVisible: ownProps.sideBarVisibility == _actions.Visibility.SHOW
-    };
+var mapStateToProps = function mapStateToProps(state) {
+    return {};
 };
 
-var mapDispatchToProps = function mapDispatchToProps(dispatch, ownProps) {
+var mapDispatchToProps = function mapDispatchToProps(dispatch) {
     return {
         onClick: function onClick() {
-            console.log("mapDispatchToProps");
-            dispatch((0, _actions.setSideBarVisibility)(ownProps.sideBarVisibility));
+            dispatch((0, _actions.setSideBarVisibility)(_actions.Visibility.SHOW));
         }
     };
 };
@@ -24606,7 +24602,6 @@ function sideBarVisibility() {
     var state = arguments.length <= 0 || arguments[0] === undefined ? HIDE : arguments[0];
     var action = arguments[1];
 
-    console.log("action " + action);
     switch (action.type) {
         case _index.SET_SIDEBAR_VISIBILITY:
             return action.visibility;
