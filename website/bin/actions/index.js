@@ -11,6 +11,7 @@ export const Visibility = {
 
 //action creators
 export function setSideBarVisibility(visibility) {
+    console.log("ACTION FACT " + visibility)
     return { type : SET_SIDEBAR_VISIBILITY, visibility}
 }
 

@@ -1,11 +1,9 @@
 import React, { PropTypes } from 'react'
 import SideBarItem from './SideBarItem'
 
-const SideBar = (events, visibility, onEventClick) => (
+const SideBar = ({isVisible, onEventClick}) => (
     <div onClick={onEventClick}>
-        {events.map((event, index) =>
-            <SideBarItem key=index {...event} />
-        )}
+        <span>"SIDE BAR BITCHES!" + {isVisible}</span>
     </div>
 )
 

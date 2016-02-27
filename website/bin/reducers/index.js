@@ -1,8 +1,9 @@
 import { combineReducers }  from 'redux';
-import {  SET_SIDEBAR_VISIBILITY, Visibility} from './actions';
-const { SHOW } = Visibility;
+import {  SET_SIDEBAR_VISIBILITY, Visibility} from '../actions/index';
+const { HIDE } = Visibility;
 
-function sideBarvisibilityFilter(state = SHOW, action)  {
+function sideBarVisibility(state = HIDE, action)  {    
+    console.log("action " + action)
     switch (action.type) {
         case SET_SIDEBAR_VISIBILITY:
             return action.visibility;
@@ -12,7 +13,7 @@ function sideBarvisibilityFilter(state = SHOW, action)  {
 }
 
 const app = combineReducers({
-    sideBarvisibilityFilter
+    sideBarVisibility
 })
 
 export default app;
