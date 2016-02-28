@@ -3,7 +3,7 @@ import SideBarItem from './SideBarItem'
 
 const SideBar = ({isVisible, onEventClick}) => (
     <div onClick={onEventClick}>
-        <span>"SIDE BAR BITCHES!" + {isVisible}</span>
+        <span>"SIDE BAR DOGS!" + {isVisible}</span>
     </div>
 )
 

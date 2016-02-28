@@ -9,8 +9,6 @@ import { Provider } from 'react-redux'
 import app from './reducers/index';
 import App from './components/App'
 
-let store =  createStore(app);
-
 class SportiveInfoCard extends React.Component {
     constructor(props) {
         super(props);
@@ -78,6 +76,7 @@ class SportiveList extends React.Component {
   }
 }
 
+/*
 class DateFilterItem extends React.Component {
   constructor(props) {
     super(props);
@@ -139,7 +138,7 @@ class DateFilter extends React.Component {
     );    
   }  
 } 
-
+*/
 
 class MapContainer {
   constructor(elementId, geo) {
@@ -246,13 +245,28 @@ function initMap() {
 }
 
 //google.maps.event.addDomListener(window, 'load', initMap);
-console.log(store.getState());
-ReactDOM.render(
-    <Provider store={store}>
-        <App />
-    </Provider>,
-    document.getElementById('root')    
-)
+
+
+
+  $.post("api/list/uk")
+    .done(function(data) {
+        let appData = {
+            events:data
+        }
+        let store =  createStore(app, appData);
+        console.log(store.getState())
+
+        ReactDOM.render(
+            <Provider store={store}>
+                <App />
+            </Provider>,
+            document.getElementById('root')    
+        )        
+        
+    });
+
+
+
 
 
 /*
