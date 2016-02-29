@@ -23,7 +23,7 @@ export class DateFilter {
     }
 }
 
-let isWithin = (d, m) => Moment(d).isSameOrBefore(m);
+let isWithin = (d, m) => Moment(d).isSameOrAfter(Moment().startOf('day')) && Moment(d).isSameOrBefore(m);
 export const DateFilterKind = {
     W1: new DateFilter(0, "1 Week", "1W", d => isWithin(d, Moment().add(1, "w"))),
     W2: new DateFilter(1, "2 Weeks", "2W", d => isWithin(d, Moment().add(2, "w"))),
@@ -33,7 +33,6 @@ export const DateFilterKind = {
     M9: new DateFilter(5, "9 Months", "9M", d => isWithin(d, Moment().add(9, "M"))),
     Y1: new DateFilter(6, "1 Year", "1Y", d => isWithin(d, Moment().add(1, "y")))
 }
-
 
 export const DateFilterKinds = [DateFilterKind.W1, DateFilterKind.W2, DateFilterKind.M1, DateFilterKind.M3, DateFilterKind.M6,  DateFilterKind.M9, DateFilterKind.Y1];
 

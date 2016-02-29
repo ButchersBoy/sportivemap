@@ -23904,7 +23904,7 @@ var DateFilter = exports.DateFilter = function DateFilter(index, long, short, lo
 };
 
 var isWithin = function isWithin(d, m) {
-    return (0, _moment2.default)(d).isSameOrBefore(m);
+    return (0, _moment2.default)(d).isSameOrAfter((0, _moment2.default)().startOf('day')) && (0, _moment2.default)(d).isSameOrBefore(m);
 };
 var DateFilterKind = exports.DateFilterKind = {
     W1: new DateFilter(0, "1 Week", "1W", function (d) {
