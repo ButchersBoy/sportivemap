@@ -52,3 +52,5 @@ let nextEventId = 0
 export const addEvent = (event) => {
     return { type : ADD_EVENT, id: nextEventId++, event}
 }
+
+

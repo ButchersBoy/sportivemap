@@ -7,7 +7,7 @@ import SideBarLinkContainer from '../containers/SideBarLinkContainer'
 const App = () => (    
     <div className={"ui pushable"} id="app-container">
         <div className={"ui sidebar"}>            
-            <FilteredEventList />
+            <FilteredEventList test={"hello world"}  />
         </div>
         
         <div className={"pusher"}>        
@@ -18,20 +18,11 @@ const App = () => (
                     <DateFilterContainer />
                     
                     <SideBarLinkContainer />
-                    
-
                 </div>
                 <div id="googleMap"></div>            
             </div>        	
         </div>                                        
     </div>
 )
-
-                    /*
-                    <div class="item clickable" id="listButton">
-                        <i class="sidebar icon"></i>
-                        List
-                    </div>
-                    */
 
 export default App;

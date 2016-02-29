@@ -23979,11 +23979,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var App = function App() {
     return _react2.default.createElement(
         'div',
-        { className: "ui  pushable", id: 'app-container' },
+        { className: "ui pushable", id: 'app-container' },
         _react2.default.createElement(
             'div',
             { className: "ui sidebar" },
-            _react2.default.createElement(_FilteredEventList2.default, null)
+            _react2.default.createElement(_FilteredEventList2.default, { test: "hello world" })
         ),
         _react2.default.createElement(
             'div',
@@ -24012,13 +24012,6 @@ var App = function App() {
         )
     );
 };
-
-/*
-<div class="item clickable" id="listButton">
-    <i class="sidebar icon"></i>
-    List
-</div>
-*/
 
 exports.default = App;
 
@@ -24559,251 +24552,19 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Moment = require('moment');
 
-var SportiveInfoCard = function (_React$Component) {
-  _inherits(SportiveInfoCard, _React$Component);
-
-  function SportiveInfoCard(props) {
-    _classCallCheck(this, SportiveInfoCard);
-
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(SportiveInfoCard).call(this, props));
-
-    _this.handleMarkerClick = _this.handleMarkerClick.bind(_this);
-    return _this;
-  }
-
-  _createClass(SportiveInfoCard, [{
-    key: 'handleMarkerClick',
-    value: function handleMarkerClick() {
-      this.props.onMarkerClick();
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      return React.createElement(
-        'div',
-        { className: "ui centered card" },
-        React.createElement(
-          'div',
-          { className: "content clickable", onClick: this.handleMarkerClick },
-          React.createElement('i', { className: "right floated marker icon" }),
-          React.createElement(
-            'div',
-            { className: "header" },
-            this.props.item.name
-          )
-        ),
-        React.createElement(
-          'div',
-          { className: "content" },
-          React.createElement(
-            'div',
-            null,
-            Moment(this.props.item.date).format("dddd, MMMM Do YYYY")
-          ),
-          React.createElement(
-            'div',
-            null,
-            React.createElement(
-              'a',
-              { href: this.props.item.indexerUrl, target: '_blank' },
-              'Website'
-            )
-          )
-        )
-      );
-    }
-  }]);
-
-  return SportiveInfoCard;
-}(React.Component);
-
-var SportiveInfoWindow = function (_React$Component2) {
-  _inherits(SportiveInfoWindow, _React$Component2);
-
-  function SportiveInfoWindow() {
-    _classCallCheck(this, SportiveInfoWindow);
-
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(SportiveInfoWindow).apply(this, arguments));
-  }
-
-  _createClass(SportiveInfoWindow, [{
-    key: 'render',
-    value: function render() {
-      return React.createElement(
-        'div',
-        { className: "ui" },
-        React.createElement(
-          'div',
-          { className: "header" },
-          this.props.item.name
-        ),
-        React.createElement(
-          'div',
-          null,
-          Moment(this.props.item.date).format("dddd, MMMM Do YYYY")
-        ),
-        React.createElement(
-          'div',
-          null,
-          React.createElement(
-            'a',
-            { href: this.props.item.indexerUrl, target: '_blank' },
-            'Website'
-          )
-        )
-      );
-    }
-  }]);
-
-  return SportiveInfoWindow;
-}(React.Component);
-
-var Sportive = function (_React$Component3) {
-  _inherits(Sportive, _React$Component3);
-
-  function Sportive(props) {
-    _classCallCheck(this, Sportive);
-
-    var _this3 = _possibleConstructorReturn(this, Object.getPrototypeOf(Sportive).call(this, props));
-
-    _this3.handleCardMarkerClick = _this3.handleCardMarkerClick.bind(_this3);
-    return _this3;
-  }
-
-  _createClass(Sportive, [{
-    key: 'handleCardMarkerClick',
-    value: function handleCardMarkerClick() {
-      this.props.mapContainer.panTo(this.marker);
-      google.maps.event.trigger(this.marker, 'click');
-    }
-  }, {
-    key: 'componentWillUnmount',
-    value: function componentWillUnmount() {
-      this.marker.setMap(null);
-    }
-  }, {
-    key: 'componentDidMount',
-    value: function componentDidMount() {
-      var _this4 = this;
-
-      this.marker = this.props.mapContainer.addMarker(this.props.item.geometryLocation, this.props.index, function (el) {
-        return ReactDOM.render(React.createElement(SportiveInfoWindow, { item: _this4.props.item }), el);
-      });
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      return React.createElement(SportiveInfoCard, { item: this.props.item, onMarkerClick: this.handleCardMarkerClick });
-    }
-  }]);
-
-  return Sportive;
-}(React.Component);
-
-var SportiveList = function (_React$Component4) {
-  _inherits(SportiveList, _React$Component4);
-
-  function SportiveList() {
-    _classCallCheck(this, SportiveList);
-
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(SportiveList).apply(this, arguments));
-  }
-
-  _createClass(SportiveList, [{
-    key: 'render',
-    value: function render() {
-      var nodes = this.props.data.map(function (sportive, index) {
-        return React.createElement(Sportive, { key: index, index: index, item: sportive, mapContainer: this.props.mapContainer });
-      }, this);
-      return React.createElement(
-        'div',
-        { className: "sportiveListNodes" },
-        nodes
-      );
-    }
-  }]);
-
-  return SportiveList;
-}(React.Component);
-
-/*
-class DateFilterItem extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleButtonClick = this.handleButtonClick.bind(this);
-  }
-  handleButtonClick(e) {
-    this.props.onClick(this.props.index, this.props.filter);
-  }
-  render() {
-    var className = "ui button";
-    if (this.props.isSelected)
-      className += " positive"; 
-    return (
-      <button className={className} onClick={e => this.handleButtonClick(e)}>
-        <span >{this.props.description}</span>        
-      </button>);
-  }
-}
-
-class DateFilter extends React.Component {
-  constructor(props) {
-    super(props);    
-    this.handleDateFilterItemClick = this.handleDateFilterItemClick.bind(this);
-    this.state = {selectedIndex : this.props.selectedIndex};
-  }
-  handleDateFilterItemClick(index) {
-    this.props.onFilterSelected(index);
-    this.setState({selectedIndex : index})
-  }
-  render() {    
-    var isWithin = (d, m) => Moment(d).isSameOrBefore(m); 
-    var bigNodes = this.props.dateFilterOps.map((item, index) => {
-      return (<DateFilterItem description={item.description}                               
-                              key={index} 
-                              index={index}
-                              isSelected={this.state.selectedIndex >= index}
-                              onClick={this.handleDateFilterItemClick} />);
-    });   
-    var littleNodes = this.props.dateFilterOps.map((item, index) => {
-      return (<DateFilterItem description={item.code}
-                              key={index} 
-                              index={index}
-                              isSelected={this.state.selectedIndex >= index}
-                              onClick={this.handleDateFilterItemClick} />);
-    });         
-    return (
-      <div>
-        <div className={"media-long"}>
-          <div className={"ui buttons"}>
-            {bigNodes}
-          </div>
-        </div>
-        <div className={"media-short"}>
-          <div className={"mini ui buttons"}>
-            {littleNodes}
-          </div>
-        </div>    
-      </div>  
-    );    
-  }  
-} 
-*/
-
 var MapContainer = function () {
-  function MapContainer(elementId, geo) {
+  function MapContainer(elementId, geo, events) {
+    var _this = this;
+
     _classCallCheck(this, MapContainer);
 
+    this.elementId = elementId;
     var mapProps = {
-      center: new google.maps.LatLng(54.0684078, -2.0086898),
+      center: new google.maps.LatLng(geo.lat, geo.lng),
       zoom: 6,
       mapTypeId: google.maps.MapTypeId.TERRAIN,
       disableDefaultUI: true,
@@ -24815,14 +24576,21 @@ var MapContainer = function () {
       overviewMapControl: true,
       rotateControl: true
     };
-
     this.map = new google.maps.Map(document.getElementById(elementId), mapProps);
+    this.items = events.map(function (e, i) {
+      return {
+        event: e,
+        index: i,
+        marker: _this.addMarker(e.geometryLocation, i, function () {}),
+        isActive: false
+      };
+    });
   }
 
   _createClass(MapContainer, [{
     key: 'addMarker',
     value: function addMarker(geo, index, renderer) {
-      var _this6 = this;
+      var _this2 = this;
 
       var marker = new google.maps.Marker({
         position: new google.maps.LatLng(geo.lat, geo.lng),
@@ -24833,15 +24601,34 @@ var MapContainer = function () {
         content: '<div id="' + id + '"></div>'
       });
       marker.addListener('click', function () {
-        if (_this6.activeInfoWindow) _this6.activeInfoWindow.close();
-        infoWindow.open(_this6.map, marker);
+        if (_this2.activeInfoWindow) _this2.activeInfoWindow.close();
+        infoWindow.open(_this2.map, marker);
         renderer(document.getElementById(id));
-        _this6.activeInfoWindow = infoWindow;
+        _this2.activeInfoWindow = infoWindow;
       });
 
-      marker.setMap(this.map);
+      //marker.setMap(this.map);
 
       return marker;
+    }
+  }, {
+    key: 'setFilter',
+    value: function setFilter(dateFilter) {
+      var _this3 = this;
+
+      this.items.forEach(function (i) {
+        if (dateFilter.logic(i.event.date)) {
+          if (!i.isActive) {
+            i.marker.setMap(_this3.map);
+            i.isActive = true;
+          }
+        } else {
+          if (i.isActive) {
+            i.marker.setMap(null);
+            i.isActive = false;
+          }
+        }
+      });
     }
   }, {
     key: 'panTo',
@@ -24853,102 +24640,29 @@ var MapContainer = function () {
   return MapContainer;
 }();
 
-var DateFilterOp = function DateFilterOp(description, code, filter) {
-  _classCallCheck(this, DateFilterOp);
-
-  this.description = description;
-  this.code = code;
-  this.filter = filter;
-};
-
-var Store = function () {
-  function Store(data) {
-    _classCallCheck(this, Store);
-
-    this.master = data;
-    var isWithin = function isWithin(d, m) {
-      return Moment(d).isSameOrBefore(m);
-    };
-    this.dateFilterOps = [new DateFilterOp("1 Week", "1W", function (d) {
-      return isWithin(d, Moment().add(1, "w"));
-    }), new DateFilterOp("2 Weeks", "2W", function (d) {
-      return isWithin(d, Moment().add(2, "w"));
-    }), new DateFilterOp("1 Month", "1M", function (d) {
-      return isWithin(d, Moment().add(1, "M"));
-    }), new DateFilterOp("3 Months", "3M", function (d) {
-      return isWithin(d, Moment().add(3, "M"));
-    }), new DateFilterOp("6 Months", "6M", function (d) {
-      return isWithin(d, Moment().add(6, "M"));
-    }), new DateFilterOp("9 Months", "9M", function (d) {
-      return isWithin(d, Moment().add(9, "M"));
-    }), new DateFilterOp("1 Year", "1Y", function (d) {
-      return isWithin(d, Moment().add(1, "y"));
-    })];
-  }
-
-  _createClass(Store, [{
-    key: 'filter',
-    value: function filter(index) {
-      var filter = this.dateFilterOps[index].filter;
-      var filtered = new Array();
-      this.master.forEach(function (element) {
-        if (filter(element.date)) filtered.push(element);
-      }, this);
-      return filtered;
-    }
-  }]);
-
-  return Store;
-}();
-
-function renderAllSportives(store, mapContainer, filterIndex) {
-
-  var data = store.filter(filterIndex);
-
-  ReactDOM.render(React.createElement(SportiveList, { data: data, mapContainer: mapContainer }), document.getElementById('sportiveList'));
-}
-
 function initMap() {
   $.post("api/list/uk").done(function (data) {
-    var mapContainer = new MapContainer("googleMap", { lat: 51.508742, lng: -0.120850 });
-    var store = new Store(data);
-    var filterIndex = 2;
-    renderAllSportives(store, mapContainer, filterIndex);
+    var appData = {
+      events: data
+    };
+    var store = (0, _redux.createStore)(_index2.default, appData);
+    console.log(store.getState());
 
-    ReactDOM.render(React.createElement(DateFilter, { dateFilterOps: store.dateFilterOps,
-      selectedIndex: filterIndex,
-      onFilterSelected: function onFilterSelected(fi) {
-        return renderAllSportives(store, mapContainer, fi);
-      } }), document.getElementById('dateFilter'));
+    ReactDOM.render(React.createElement(
+      _reactRedux.Provider,
+      { store: store },
+      React.createElement(_App2.default, null)
+    ), document.getElementById('root'));
+    var mapContainer = new MapContainer("googleMap", { lat: 54.0684078, lng: -2.0086898 }, store.getState().events);
+    mapContainer.setFilter(store.getState().dateFilter);
+
+    var unsubscribe = store.subscribe(function () {
+      return mapContainer.setFilter(store.getState().dateFilter);
+    });
   });
 }
 
-//google.maps.event.addDomListener(window, 'load', initMap);
-
-$.post("api/list/uk").done(function (data) {
-  var appData = {
-    events: data
-  };
-  var store = (0, _redux.createStore)(_index2.default, appData);
-  console.log(store.getState());
-
-  ReactDOM.render(React.createElement(
-    _reactRedux.Provider,
-    { store: store },
-    React.createElement(_App2.default, null)
-  ), document.getElementById('root'));
-});
-
-/*
-let unsubscribe = store.subscribe(() =>
-  console.log(store.getState())
-)
-store.dispatch(setSideBarVisibility(Visibility.SHOW))
-store.dispatch(setSideBarVisibility(Visibility.HIDE))
-store.dispatch(setSideBarVisibility(Visibility.SHOW))
-
-unsubscribe()
-*/
+google.maps.event.addDomListener(window, 'load', initMap);
 
 },{"./components/App":182,"./reducers/index":193,"moment":31,"react":170,"react-dom":32,"react-redux":35,"redux":176}],192:[function(require,module,exports){
 'use strict';
