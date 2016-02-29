@@ -2,12 +2,11 @@ import React, { PropTypes } from 'react'
 
 const SideBarLink = ({onClick}) => {
     return (
-        <a href="#" onClick={e => {
-           e.preventDefault()
-           onClick() 
-        }}>
-            MENU!
-        </a>        
+        <div className={"item clickable"} id="listButton"
+             onClick={e => onClick()}>
+            <i className={"sidebar icon"}></i>
+            List
+        </div>
     );    
 }
 

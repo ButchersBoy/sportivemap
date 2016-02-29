@@ -6,7 +6,7 @@ class DateFilterItem extends React.Component {
     this.handleButtonClick = this.handleButtonClick.bind(this);
   }
   handleButtonClick(e) {
-    this.props.onClick(this.props.index, this.props.filter);
+    this.props.onClick();
   }
   render() {
     var className = "ui button";
@@ -22,26 +22,23 @@ class DateFilterItem extends React.Component {
 export default class DateFilter extends React.Component {
   constructor(props) {
     super(props);    
-    this.handleDateFilterItemClick = this.handleDateFilterItemClick.bind(this);
-    this.state = {selectedIndex : this.props.selectedFilter.index};
+    this.handleDateFilterItemClick = this.handleDateFilterItemClick.bind(this);    
   }
   handleDateFilterItemClick(item) {
     this.props.onFilterClick(item);
   }
-  render() {    
+  render() {       
     var isWithin = (d, m) => Moment(d).isSameOrBefore(m); 
-    var bigNodes = this.props.dateFilters.map((item) => {
+    var bigNodes = this.props.allFilters.map((item) => {
       return (<DateFilterItem description={item.long}                               
-                              key={item.index} 
-                              index={item.index}
-                              isSelected={this.state.selectedIndex >= item.index}
+                              key={item.index}                               
+                              isSelected={this.props.selectedFilter.index >= item.index}
                               onClick={() => this.handleDateFilterItemClick(item)} />);
     });   
-    var littleNodes = this.props.dateFilters.map((item) => {
+    var littleNodes = this.props.allFilters.map((item) => {
       return (<DateFilterItem description={item.short}
-                              key={item.index} 
-                              index={item.index}
-                              isSelected={this.state.selectedIndex >= item.index}
+                              key={item.index}                               
+                              isSelected={this.props.selectedFilter.index >= item.index}
                               onClick={() => this.handleDateFilterItemClick(item)} />);
     });         
     return (

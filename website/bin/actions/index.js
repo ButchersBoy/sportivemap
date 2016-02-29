@@ -33,7 +33,8 @@ export const DateFilterKind = {
     Y1: new DateFilter(6, "1 Year", "1Y", d => isWithin(d, Moment().add(1, "y")))
 }
 
-export const DateFilterKinds = [DateFilterKind.W1, DateFilterKind.W2, DateFilterKind.M1, DateFilterKind.M1, DateFilterKind.M3, DateFilterKind.M6,  DateFilterKind.M9, DateFilterKind.Y1];
+
+export const DateFilterKinds = [DateFilterKind.W1, DateFilterKind.W2, DateFilterKind.M1, DateFilterKind.M3, DateFilterKind.M6,  DateFilterKind.M9, DateFilterKind.Y1];
 
 //action creators
 

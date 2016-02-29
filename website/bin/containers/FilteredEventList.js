@@ -2,8 +2,13 @@ import { connect } from 'react-redux'
 import { ADD_EVENT, addEvent } from '../actions/index.js'
 import EventList from '../components/EventList.js'
 
+
+const getVisibleEvents = (events, dateFilter) => {
+    return events.filter(e => dateFilter.logic(e.date));
+}
+
 const mapStateToProps = (state) => {
-    return {events : state.events}
+    return {events : getVisibleEvents(state.events, state.dateFilter)}
 }
 
 const mapDispatchToProps = (dispatch) => {

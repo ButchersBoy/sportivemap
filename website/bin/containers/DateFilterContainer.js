@@ -1,14 +1,17 @@
 import { connect } from 'react-redux'
-import { ADD_EVENT, addEvent } from '../actions/index'
+import { setDateFilter, DateFilterKinds } from '../actions/index'
 import DateFilter from '../components/DateFilter'
 
-const mapStateToProps = (state) => {
-    return {events : state.dateFilter}
+const mapStateToProps = (state) => {    
+    return {
+        selectedFilter : state.dateFilter,
+        allFilters : DateFilterKinds
+        }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch, o) => {
     return {
-        onFilterSelected : dispatch()
+        onFilterClick : (item) => dispatch(setDateFilter(item))
     }    
 }
 
