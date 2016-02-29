@@ -9,6 +9,8 @@ import { Provider } from 'react-redux'
 import app from './reducers/index';
 import App from './components/App'
 
+import { setSelectedEvent } from './actions/index'
+
 class SportiveInfoWindow extends React.Component {
     render() {
         return (
@@ -21,7 +23,7 @@ class SportiveInfoWindow extends React.Component {
 }
 
 class MapContainer {
-  constructor(elementId, geo, events) {
+  constructor(elementId, geo, events, selectEventDispatcher) {
       this.elementId = elementId;
     	var mapProps = {
         center:new google.maps.LatLng(geo.lat,geo.lng),
@@ -36,43 +38,31 @@ class MapContainer {
         overviewMapControl:true,
         rotateControl:true
       };            
-      this.map=new google.maps.Map(document.getElementById(elementId), mapProps);      
+      this.map=new google.maps.Map(document.getElementById(elementId), mapProps);
+      this.selectEventDispatcher = selectEventDispatcher;      
       this.items = events.map((e, i) => {
         return { 
           event : e, 
-          index : i, 
-          marker : this.addMarker(e.geometryLocation, i, 
-            el => ReactDOM.render(<SportiveInfoWindow item={e}/>, el)),
+          index : i,           
+          marker : this.addMarker(e),                    
           isActive : false
           };        
       })
           
   }
-  addMarker(geo, index, renderer) {    
+  addMarker(event) {    
     var marker=new google.maps.Marker({
-      position:new google.maps.LatLng(geo.lat, geo.lng),
+      position:new google.maps.LatLng(event.geometryLocation.lat, event.geometryLocation.lng),
       icon:'./images/coggy32.png'
-    });
-    var id = "info-window-" + index;
-    var infoWindow = new google.maps.InfoWindow({
-      content: '<div id="' + id + '"></div>'
-    });
+    });    
+    
     marker.addListener('click', () => {
-        if (this.activeInfoWindow)
-            this.activeInfoWindow.close();
-        infoWindow.open(this.map, marker);
-        renderer(document.getElementById(id));
-        this.activeInfoWindow = infoWindow; 
-    });
+      this.selectEventDispatcher(event);                  
+    }, this);
     
     return marker;   
   }    
   setFilter(dateFilter) {
-    if (this.activeInfoWindow)
-    {
-      this.activeInfoWindow.close();
-      this.activeInfoWindow = null;
-    }
     this.items.forEach(i => {
       if (dateFilter.logic(i.event.date))
       {
@@ -90,12 +80,35 @@ class MapContainer {
       }      
     })    
   }
-  focus(event) {
+  focus(event) {    
+    if (this.activeInfoWindow)
+    {
+      this.activeInfoWindow.close();
+      this.activeInfoWindow = null;
+    }          
+    if (event == null) return;
     for (var index = 0; index < this.items.length; index++) {
       if (this.items[index].event == event)
-      {
-        this.map.panTo(this.items[index].marker.getPosition());
-        google.maps.event.trigger(this.items[index].marker, 'click');
+      {        
+        //TODO only create this once per event!
+        let elementId = "standard-info-window-" + index;
+        let infoWindow = new google.maps.InfoWindow({
+          content: '<div id="' + elementId + '"></div>'
+        });
+        infoWindow.open(this.map, this.items[index].marker);                  
+        this.activeInfoWindow = infoWindow;         
+        this.map.panTo(this.items[index].marker.getPosition());             
+
+        var render = () => {
+          var el = document.getElementById(elementId);
+          if (!el) return false;
+          ReactDOM.render(<SportiveInfoWindow item={this.items[index].event}/>, el);
+          return true;
+        }
+        
+        //Chrome/maps not ready on very first item...
+        if (!render()) setTimeout(render, 10);
+                   
         return;        
       }      
     }
@@ -120,7 +133,10 @@ function initMap() {
             </Provider>,
             document.getElementById('root')    
         )
-        var mapContainer = new MapContainer("googleMap", { lat: 54.0684078, lng: -2.0086898}, store.getState().events);
+        var mapContainer = new MapContainer(
+          "googleMap", { lat: 54.0684078, lng: -2.0086898}, 
+          store.getState().events, 
+          e => store.dispatch(setSelectedEvent(e)));
         mapContainer.setFilter(store.getState().dateFilter);      
         
         let unsubscribe = store.subscribe(() => {

@@ -24408,6 +24408,8 @@ exports.default = SideBarLinkContainer;
 },{"../actions":181,"../components/SideBarLink":185,"react-redux":35}],189:[function(require,module,exports){
 "use strict";
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _redux = require('redux');
@@ -24421,6 +24423,8 @@ var _index2 = _interopRequireDefault(_index);
 var _App = require('./components/App');
 
 var _App2 = _interopRequireDefault(_App);
+
+var _index3 = require('./actions/index');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -24476,7 +24480,7 @@ var SportiveInfoWindow = function (_React$Component) {
 }(React.Component);
 
 var MapContainer = function () {
-  function MapContainer(elementId, geo, events) {
+  function MapContainer(elementId, geo, events, selectEventDispatcher) {
     var _this2 = this;
 
     _classCallCheck(this, MapContainer);
@@ -24496,13 +24500,12 @@ var MapContainer = function () {
       rotateControl: true
     };
     this.map = new google.maps.Map(document.getElementById(elementId), mapProps);
+    this.selectEventDispatcher = selectEventDispatcher;
     this.items = events.map(function (e, i) {
       return {
         event: e,
         index: i,
-        marker: _this2.addMarker(e.geometryLocation, i, function (el) {
-          return ReactDOM.render(React.createElement(SportiveInfoWindow, { item: e }), el);
-        }),
+        marker: _this2.addMarker(e),
         isActive: false
       };
     });
@@ -24510,23 +24513,17 @@ var MapContainer = function () {
 
   _createClass(MapContainer, [{
     key: 'addMarker',
-    value: function addMarker(geo, index, renderer) {
+    value: function addMarker(event) {
       var _this3 = this;
 
       var marker = new google.maps.Marker({
-        position: new google.maps.LatLng(geo.lat, geo.lng),
+        position: new google.maps.LatLng(event.geometryLocation.lat, event.geometryLocation.lng),
         icon: './images/coggy32.png'
       });
-      var id = "info-window-" + index;
-      var infoWindow = new google.maps.InfoWindow({
-        content: '<div id="' + id + '"></div>'
-      });
+
       marker.addListener('click', function () {
-        if (_this3.activeInfoWindow) _this3.activeInfoWindow.close();
-        infoWindow.open(_this3.map, marker);
-        renderer(document.getElementById(id));
-        _this3.activeInfoWindow = infoWindow;
-      });
+        _this3.selectEventDispatcher(event);
+      }, this);
 
       return marker;
     }
@@ -24535,10 +24532,6 @@ var MapContainer = function () {
     value: function setFilter(dateFilter) {
       var _this4 = this;
 
-      if (this.activeInfoWindow) {
-        this.activeInfoWindow.close();
-        this.activeInfoWindow = null;
-      }
       this.items.forEach(function (i) {
         if (dateFilter.logic(i.event.date)) {
           if (!i.isActive) {
@@ -24556,11 +24549,45 @@ var MapContainer = function () {
   }, {
     key: 'focus',
     value: function focus(event) {
+      var _this5 = this;
+
+      if (this.activeInfoWindow) {
+        this.activeInfoWindow.close();
+        this.activeInfoWindow = null;
+      }
+      if (event == null) return;
       for (var index = 0; index < this.items.length; index++) {
         if (this.items[index].event == event) {
-          this.map.panTo(this.items[index].marker.getPosition());
-          google.maps.event.trigger(this.items[index].marker, 'click');
-          return;
+          var render;
+
+          var _ret = function () {
+            //TODO only create this once per event!
+            var elementId = "standard-info-window-" + index;
+            var infoWindow = new google.maps.InfoWindow({
+              content: '<div id="' + elementId + '"></div>'
+            });
+            infoWindow.open(_this5.map, _this5.items[index].marker);
+            _this5.activeInfoWindow = infoWindow;
+            _this5.map.panTo(_this5.items[index].marker.getPosition());
+
+            render = function render() {
+              var el = document.getElementById(elementId);
+              if (!el) return false;
+              ReactDOM.render(React.createElement(SportiveInfoWindow, { item: _this5.items[index].event }), el);
+              return true;
+            };
+
+            //Chrome/maps not ready on very first item...
+
+
+            if (!render()) setTimeout(render, 10);
+
+            return {
+              v: undefined
+            };
+          }();
+
+          if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
         }
       }
     }
@@ -24587,7 +24614,9 @@ function initMap() {
       { store: store },
       React.createElement(_App2.default, null)
     ), document.getElementById('root'));
-    var mapContainer = new MapContainer("googleMap", { lat: 54.0684078, lng: -2.0086898 }, store.getState().events);
+    var mapContainer = new MapContainer("googleMap", { lat: 54.0684078, lng: -2.0086898 }, store.getState().events, function (e) {
+      return store.dispatch((0, _index3.setSelectedEvent)(e));
+    });
     mapContainer.setFilter(store.getState().dateFilter);
 
     var unsubscribe = store.subscribe(function () {
@@ -24600,7 +24629,7 @@ function initMap() {
 
 google.maps.event.addDomListener(window, 'load', initMap);
 
-},{"./components/App":182,"./reducers/index":191,"moment":31,"react":170,"react-dom":32,"react-redux":35,"redux":176}],190:[function(require,module,exports){
+},{"./actions/index":181,"./components/App":182,"./reducers/index":191,"moment":31,"react":170,"react-dom":32,"react-redux":35,"redux":176}],190:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -24690,6 +24719,8 @@ var selectedEvent = function selectedEvent() {
     switch (action.type) {
         case _index.SELECT_EVENT:
             return action.event;
+        case _index.FILTER_EVENT_DATE:
+            return null;
         default:
             return state;
     }
