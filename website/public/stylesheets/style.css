@@ -33,6 +33,14 @@
 #sportiveList {
     margin: 4px;
 }
+.info-detail {
+    
+    float : left;
+}
+.info-advert {
+    margin-left: 8px;
+    float : right;
+}
 .clickable {
     cursor: hand;
     cursor: pointer; 
