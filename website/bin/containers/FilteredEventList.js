@@ -1,14 +1,14 @@
 import { connect } from 'react-redux'
-import { ADD_EVENT, addEvent, setSelectedEvent } from '../actions/index.js'
+import { ADD_EVENT, addEvent, setSelectedEvent, IsSearchMatch } from '../actions/index.js'
 import EventList from '../components/EventList.js'
 
 
-const getVisibleEvents = (events, dateFilter) => {
-    return events.filter(e => dateFilter.logic(e.date));
+const getVisibleEvents = (events, dateFilter, searchText) => {        
+    return events.filter(e => dateFilter.logic(e.date) && IsSearchMatch(e, searchText));
 }
 
 const mapStateToProps = (state) => {
-    return {events : getVisibleEvents(state.events, state.dateFilter)}
+    return {events : getVisibleEvents(state.events, state.dateFilter, state.searchText)}
 }
 
 const mapDispatchToProps = (dispatch) => {

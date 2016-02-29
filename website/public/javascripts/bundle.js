@@ -23870,7 +23870,7 @@ arguments[4][41][0].apply(exports,arguments)
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.addEvent = exports.setSelectedEvent = exports.setDateFilter = exports.setSideBarVisibility = exports.DateFilterKinds = exports.DateFilterKind = exports.DateFilter = exports.Visibility = exports.SELECT_EVENT = exports.FILTER_EVENT_DATE = exports.ADD_EVENT = exports.SET_SIDEBAR_VISIBILITY = undefined;
+exports.addEvent = exports.setSearchText = exports.setSelectedEvent = exports.setDateFilter = exports.setSideBarVisibility = exports.DateFilterKinds = exports.DateFilterKind = exports.IsSearchMatch = exports.DateFilter = exports.Visibility = exports.SET_SEARCH_TEXT = exports.SELECT_EVENT = exports.FILTER_EVENT_DATE = exports.ADD_EVENT = exports.SET_SIDEBAR_VISIBILITY = undefined;
 
 var _moment = require('moment');
 
@@ -23886,6 +23886,7 @@ var SET_SIDEBAR_VISIBILITY = exports.SET_SIDEBAR_VISIBILITY = 'SET_SIDEBAR_VISIB
 var ADD_EVENT = exports.ADD_EVENT = 'ADD_EVENT';
 var FILTER_EVENT_DATE = exports.FILTER_EVENT_DATE = 'FILTER_EVENT_DATE';
 var SELECT_EVENT = exports.SELECT_EVENT = 'SELECT_EVENT';
+var SET_SEARCH_TEXT = exports.SET_SEARCH_TEXT = 'SET_SEARCH_TEXT';
 
 //other constants
 
@@ -23901,6 +23902,14 @@ var DateFilter = exports.DateFilter = function DateFilter(index, long, short, lo
     this.long = long;
     this.short = short;
     this.logic = logic;
+};
+
+var IsSearchMatch = exports.IsSearchMatch = function IsSearchMatch(event, text) {
+    if (!text) return true;
+    text = text.trim();
+    if (text.length == 0) return true;
+    var t = text.toLowerCase();
+    return event.name.toLowerCase().indexOf(text) >= 0 || event.formattedAddress.toLowerCase().indexOf(text) >= 0 || event.locationSummary.toLowerCase().indexOf(text) >= 0;
 };
 
 var isWithin = function isWithin(d, m) {
@@ -23946,6 +23955,10 @@ var setSelectedEvent = exports.setSelectedEvent = function setSelectedEvent(even
     return { type: SELECT_EVENT, event: event };
 };
 
+var setSearchText = exports.setSearchText = function setSearchText(text) {
+    return { type: SET_SEARCH_TEXT, text: text };
+};
+
 //do we need?   maybe if we are starting store before initial ajax
 var nextEventId = 0;
 var addEvent = exports.addEvent = function addEvent(event) {
@@ -23974,6 +23987,10 @@ var _DateFilterContainer2 = _interopRequireDefault(_DateFilterContainer);
 var _SideBarLinkContainer = require('../containers/SideBarLinkContainer');
 
 var _SideBarLinkContainer2 = _interopRequireDefault(_SideBarLinkContainer);
+
+var _SearchContainer = require('../containers/SearchContainer');
+
+var _SearchContainer2 = _interopRequireDefault(_SearchContainer);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -24006,7 +24023,12 @@ var App = function App() {
                         'Sportives in the next:'
                     ),
                     _react2.default.createElement(_DateFilterContainer2.default, null),
-                    _react2.default.createElement(_SideBarLinkContainer2.default, null)
+                    _react2.default.createElement(
+                        'div',
+                        { className: "toolBar" },
+                        _react2.default.createElement(_SideBarLinkContainer2.default, null),
+                        _react2.default.createElement(_SearchContainer2.default, null)
+                    )
                 ),
                 _react2.default.createElement('div', { id: 'googleMap' })
             )
@@ -24016,7 +24038,7 @@ var App = function App() {
 
 exports.default = App;
 
-},{"../containers/DateFilterContainer":186,"../containers/FilteredEventList":187,"../containers/SideBarLinkContainer":188,"react":170}],183:[function(require,module,exports){
+},{"../containers/DateFilterContainer":187,"../containers/FilteredEventList":188,"../containers/SearchContainer":189,"../containers/SideBarLinkContainer":190,"react":170}],183:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -24266,6 +24288,43 @@ exports.default = EventList;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
+		value: true
+});
+
+var _react = require("react");
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Search = function Search(_ref) {
+		var _onChange = _ref.onChange;
+
+		return _react2.default.createElement(
+				"div",
+				{ className: "ui search" },
+				_react2.default.createElement(
+						"div",
+						{ className: "ui icon input" },
+						_react2.default.createElement("input", { className: "prompt", type: "text", placeholder: "Search...",
+								onChange: function onChange(e) {
+										return _onChange(e.target.value);
+								} }),
+						_react2.default.createElement("i", { className: "search icon" })
+				)
+		);
+};
+
+Search.propTypes = {
+		onChange: _react.PropTypes.func.isRequired
+};
+
+exports.default = Search;
+
+},{"react":170}],186:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
@@ -24295,7 +24354,7 @@ SideBarLink.propTypes = {
 
 exports.default = SideBarLink;
 
-},{"react":170}],186:[function(require,module,exports){
+},{"react":170}],187:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -24331,7 +24390,7 @@ var DateFilterContainer = (0, _reactRedux.connect)(mapStateToProps, mapDispatchT
 
 exports.default = DateFilterContainer;
 
-},{"../actions/index":181,"../components/DateFilter":183,"react-redux":35}],187:[function(require,module,exports){
+},{"../actions/index":181,"../components/DateFilter":183,"react-redux":35}],188:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -24348,14 +24407,14 @@ var _EventList2 = _interopRequireDefault(_EventList);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var getVisibleEvents = function getVisibleEvents(events, dateFilter) {
+var getVisibleEvents = function getVisibleEvents(events, dateFilter, searchText) {
     return events.filter(function (e) {
-        return dateFilter.logic(e.date);
+        return dateFilter.logic(e.date) && (0, _index.IsSearchMatch)(e, searchText);
     });
 };
 
 var mapStateToProps = function mapStateToProps(state) {
-    return { events: getVisibleEvents(state.events, state.dateFilter) };
+    return { events: getVisibleEvents(state.events, state.dateFilter, state.searchText) };
 };
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
@@ -24370,7 +24429,40 @@ var FilteredEventList = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToP
 
 exports.default = FilteredEventList;
 
-},{"../actions/index.js":181,"../components/EventList.js":184,"react-redux":35}],188:[function(require,module,exports){
+},{"../actions/index.js":181,"../components/EventList.js":184,"react-redux":35}],189:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _reactRedux = require('react-redux');
+
+var _actions = require('../actions');
+
+var _Search = require('../components/Search');
+
+var _Search2 = _interopRequireDefault(_Search);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var mapStateToProps = function mapStateToProps(state) {
+    return {};
+};
+
+var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+    return {
+        onChange: function onChange(text) {
+            return dispatch((0, _actions.setSearchText)(text));
+        }
+    };
+};
+
+var SearchContainer = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(_Search2.default);
+
+exports.default = SearchContainer;
+
+},{"../actions":181,"../components/Search":185,"react-redux":35}],190:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -24405,7 +24497,7 @@ var SideBarLinkContainer = (0, _reactRedux.connect)(mapStateToProps, mapDispatch
 
 exports.default = SideBarLinkContainer;
 
-},{"../actions":181,"../components/SideBarLink":185,"react-redux":35}],189:[function(require,module,exports){
+},{"../actions":181,"../components/SideBarLink":186,"react-redux":35}],191:[function(require,module,exports){
 "use strict";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -24466,6 +24558,11 @@ var SportiveInfoWindow = function (_React$Component) {
         React.createElement(
           'div',
           null,
+          this.props.item.formattedAddress
+        ),
+        React.createElement(
+          'div',
+          null,
           React.createElement(
             'a',
             { href: this.props.item.indexerUrl, target: '_blank' },
@@ -24506,7 +24603,8 @@ var MapContainer = function () {
         event: e,
         index: i,
         marker: _this2.addMarker(e),
-        isActive: false
+        isVisible: false,
+        infoWindow: null
       };
     });
   }
@@ -24529,19 +24627,23 @@ var MapContainer = function () {
     }
   }, {
     key: 'setFilter',
-    value: function setFilter(dateFilter) {
+    value: function setFilter(dateFilter, text) {
       var _this4 = this;
 
       this.items.forEach(function (i) {
-        if (dateFilter.logic(i.event.date)) {
-          if (!i.isActive) {
+        if (dateFilter.logic(i.event.date) && (0, _index3.IsSearchMatch)(i.event, text)) {
+          if (!i.isVisible) {
             i.marker.setMap(_this4.map);
-            i.isActive = true;
+            i.isVisible = true;
           }
         } else {
-          if (i.isActive) {
+          if (i.isVisible) {
+            if (_this4.activeEvent && _this4.activeEvent.event == i.event) {
+              console.log("unselecting event " + _this4.activeEvent.event.name);
+              _this4.selectEventDispatcher(null);
+            }
             i.marker.setMap(null);
-            i.isActive = false;
+            i.isVisible = false;
           }
         }
       });
@@ -24551,9 +24653,10 @@ var MapContainer = function () {
     value: function focus(event) {
       var _this5 = this;
 
-      if (this.activeInfoWindow) {
-        this.activeInfoWindow.close();
-        this.activeInfoWindow = null;
+      if (this.activeEvent && this.activeEvent.event != event) {
+        console.log("closing info window " + this.activeEvent.event.name);
+        this.activeEvent.infoWindow.close();
+        this.activeEvent = null;
       }
       if (event == null) return;
       for (var index = 0; index < this.items.length; index++) {
@@ -24563,11 +24666,16 @@ var MapContainer = function () {
           var _ret = function () {
             //TODO only create this once per event!
             var elementId = "standard-info-window-" + index;
-            var infoWindow = new google.maps.InfoWindow({
-              content: '<div id="' + elementId + '"></div>'
-            });
+
+            var infoWindow = _this5.items[index].infoWindow;
+            if (!infoWindow) {
+              infoWindow = new google.maps.InfoWindow({
+                content: '<div id="' + elementId + '"></div>'
+              });
+              _this5.items[index].infoWindow = infoWindow;
+            }
             infoWindow.open(_this5.map, _this5.items[index].marker);
-            _this5.activeInfoWindow = infoWindow;
+            _this5.activeEvent = { infoWindow: infoWindow, event: _this5.items[index].event };
             _this5.map.panTo(_this5.items[index].marker.getPosition());
 
             render = function render() {
@@ -24580,7 +24688,7 @@ var MapContainer = function () {
             //Chrome/maps not ready on very first item...
 
 
-            if (!render()) setTimeout(render, 10);
+            if (!render()) setTimeout(render, 100);
 
             return {
               v: undefined
@@ -24620,16 +24728,17 @@ function initMap() {
     mapContainer.setFilter(store.getState().dateFilter);
 
     var unsubscribe = store.subscribe(function () {
-      console.log(store.getState());
-      mapContainer.setFilter(store.getState().dateFilter);
-      mapContainer.focus(store.getState().selectedEvent);
+      var s = store.getState();
+      console.log(s);
+      mapContainer.focus(s.selectedEvent);
+      mapContainer.setFilter(s.dateFilter, s.searchText);
     });
   });
 }
 
 google.maps.event.addDomListener(window, 'load', initMap);
 
-},{"./actions/index":181,"./components/App":182,"./reducers/index":191,"moment":31,"react":170,"react-dom":32,"react-redux":35,"redux":176}],190:[function(require,module,exports){
+},{"./actions/index":181,"./components/App":182,"./reducers/index":193,"moment":31,"react":170,"react-dom":32,"react-redux":35,"redux":176}],192:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -24652,7 +24761,7 @@ var dateFilter = function dateFilter() {
 
 exports.default = dateFilter;
 
-},{"../actions/index":181}],191:[function(require,module,exports){
+},{"../actions/index":181}],193:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -24689,6 +24798,7 @@ function sideBarVisibility() {
 }
 
 var event = function event(state, action) {
+    //TODO we dont use add_event, just return state
     switch (action.type) {
         case _index.ADD_EVENT:
             return {
@@ -24704,6 +24814,7 @@ var events = function events() {
     var state = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
     var action = arguments[1];
 
+    //TODO we dont use add_event, just return state
     switch (action.type) {
         case _index.ADD_EVENT:
             return [].concat(_toConsumableArray(state), [event(undefined, action)]);
@@ -24726,10 +24837,22 @@ var selectedEvent = function selectedEvent() {
     }
 };
 
+var searchText = function searchText() {
+    var state = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+    var action = arguments[1];
+
+    switch (action.type) {
+        case _index.SET_SEARCH_TEXT:
+            return action.text;
+        default:
+            return state;
+    }
+};
+
 var app = (0, _redux.combineReducers)({
-    sideBarVisibility: sideBarVisibility, events: events, dateFilter: _dateFilter2.default, selectedEvent: selectedEvent
+    sideBarVisibility: sideBarVisibility, events: events, dateFilter: _dateFilter2.default, selectedEvent: selectedEvent, searchText: searchText
 });
 
 exports.default = app;
 
-},{"../actions/index":181,"./dateFilter":190,"redux":176}]},{},[189]);
+},{"../actions/index":181,"./dateFilter":192,"redux":176}]},{},[191]);

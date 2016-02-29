@@ -9,7 +9,7 @@ import { Provider } from 'react-redux'
 import app from './reducers/index';
 import App from './components/App'
 
-import { setSelectedEvent } from './actions/index'
+import { setSelectedEvent, IsSearchMatch } from './actions/index'
 
 class SportiveInfoWindow extends React.Component {
     render() {
@@ -17,6 +17,7 @@ class SportiveInfoWindow extends React.Component {
             <div className={"ui"}>
                 <div className={"header"}>{this.props.item.name}</div>
                 <div>{Moment(this.props.item.date).format("dddd, MMMM Do YYYY")}</div>
+                <div>{this.props.item.formattedAddress}</div>               
                 <div><a href={this.props.item.indexerUrl} target="_blank">Website</a></div>
             </div>);
     }
@@ -45,7 +46,8 @@ class MapContainer {
           event : e, 
           index : i,           
           marker : this.addMarker(e),                    
-          isActive : false
+          isVisible : false,
+          infoWindow : null
           };        
       })
           
@@ -62,29 +64,33 @@ class MapContainer {
     
     return marker;   
   }    
-  setFilter(dateFilter) {
+  setFilter(dateFilter, text) {
     this.items.forEach(i => {
-      if (dateFilter.logic(i.event.date))
+      if (dateFilter.logic(i.event.date) && IsSearchMatch(i.event, text))
       {
-        if (!i.isActive) {
+        if (!i.isVisible) {
           i.marker.setMap(this.map);
-          i.isActive = true;
+          i.isVisible = true;
         }
       }
       else
       { 
-        if (i.isActive) {
-          i.marker.setMap(null);
-          i.isActive = false;
+        if (i.isVisible) {            
+          if (this.activeEvent && this.activeEvent.event == i.event)
+          {            
+            this.selectEventDispatcher(null)
+          }          
+          i.marker.setMap(null);          
+          i.isVisible = false;
         }        
       }      
     })    
   }
   focus(event) {    
-    if (this.activeInfoWindow)
-    {
-      this.activeInfoWindow.close();
-      this.activeInfoWindow = null;
+    if (this.activeEvent && this.activeEvent.event != event)
+    {      
+      this.activeEvent.infoWindow.close();
+      this.activeEvent = null;
     }          
     if (event == null) return;
     for (var index = 0; index < this.items.length; index++) {
@@ -92,11 +98,16 @@ class MapContainer {
       {        
         //TODO only create this once per event!
         let elementId = "standard-info-window-" + index;
-        let infoWindow = new google.maps.InfoWindow({
-          content: '<div id="' + elementId + '"></div>'
-        });
+                        
+        let infoWindow = this.items[index].infoWindow;
+        if (!infoWindow) {          
+          infoWindow = new google.maps.InfoWindow({
+            content: '<div id="' + elementId + '"></div>'
+          });
+          this.items[index].infoWindow = infoWindow          
+        }                
         infoWindow.open(this.map, this.items[index].marker);                  
-        this.activeInfoWindow = infoWindow;         
+        this.activeEvent = { infoWindow, event : this.items[index].event};         
         this.map.panTo(this.items[index].marker.getPosition());             
 
         var render = () => {
@@ -107,7 +118,7 @@ class MapContainer {
         }
         
         //Chrome/maps not ready on very first item...
-        if (!render()) setTimeout(render, 10);
+        if (!render()) setTimeout(render, 100);
                    
         return;        
       }      
@@ -140,9 +151,10 @@ function initMap() {
         mapContainer.setFilter(store.getState().dateFilter);      
         
         let unsubscribe = store.subscribe(() => {
-          console.log(store.getState())
-          mapContainer.setFilter(store.getState().dateFilter)
-          mapContainer.focus(store.getState().selectedEvent)
+          let s = store.getState();
+          console.log(s)
+          mapContainer.focus(s.selectedEvent)
+          mapContainer.setFilter(s.dateFilter, s.searchText)          
         })          
     });
 }

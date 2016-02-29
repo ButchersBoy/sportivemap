@@ -6,6 +6,7 @@ export const SET_SIDEBAR_VISIBILITY = 'SET_SIDEBAR_VISIBILITY'
 export const ADD_EVENT = 'ADD_EVENT'
 export const FILTER_EVENT_DATE = 'FILTER_EVENT_DATE'
 export const SELECT_EVENT = 'SELECT_EVENT'
+export const SET_SEARCH_TEXT = 'SET_SEARCH_TEXT'
 
 //other constants
 
@@ -21,6 +22,16 @@ export class DateFilter {
         this.short = short
         this.logic = logic
     }
+}
+
+export const IsSearchMatch = (event, text) => {
+    if (!text) return true
+    text = text.trim()
+    if (text.length == 0) return true
+    let t = text.toLowerCase()    
+    return event.name.toLowerCase().indexOf(text) >= 0 
+        || event.formattedAddress.toLowerCase().indexOf(text) >= 0
+        || event.locationSummary.toLowerCase().indexOf(text) >= 0
 }
 
 let isWithin = (d, m) => Moment(d).isSameOrAfter(Moment().startOf('day')) && Moment(d).isSameOrBefore(m);
@@ -48,6 +59,10 @@ export const setDateFilter = (kind) => {
 
 export const setSelectedEvent = (event) => {    
     return { type : SELECT_EVENT, event }
+}
+
+export const setSearchText = (text) => {
+    return { type : SET_SEARCH_TEXT, text }    
 }
 
 //do we need?   maybe if we are starting store before initial ajax
