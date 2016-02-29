@@ -5,6 +5,7 @@ import Moment from 'moment'
 export const SET_SIDEBAR_VISIBILITY = 'SET_SIDEBAR_VISIBILITY'
 export const ADD_EVENT = 'ADD_EVENT'
 export const FILTER_EVENT_DATE = 'FILTER_EVENT_DATE'
+export const SELECT_EVENT = 'SELECT_EVENT'
 
 //other constants
 
@@ -42,9 +43,12 @@ export const setSideBarVisibility = (visibility) => {
     return { type : SET_SIDEBAR_VISIBILITY, visibility}
 }
 
-
 export const setDateFilter = (kind) => {
     return { type : FILTER_EVENT_DATE, kind }
+}
+
+export const setSelectedEvent = (event) => {    
+    return { type : SELECT_EVENT, event }
 }
 
 //do we need?   maybe if we are starting store before initial ajax

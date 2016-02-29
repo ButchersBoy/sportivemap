@@ -2,6 +2,13 @@ import React from 'react'
 import Moment from 'moment'
 
 export class EventInfoCard extends React.Component {
+    constructor(props) {
+        super(props);
+        this.handleMarkerClick = this.handleMarkerClick.bind(this);
+    }    
+    handleMarkerClick() {        
+        this.props.onClick(this.props.item)
+    }
     render() {
         return (
             <div className={"ui centered card"}>
@@ -17,38 +24,12 @@ export class EventInfoCard extends React.Component {
     }
 }
 
-/*
-class Event extends React.Component {
-    constructor(props) {
-        super(props);
-        this.handleCardMarkerClick = this.handleCardMarkerClick.bind(this);
-    }
-  handleCardMarkerClick() {
-      //this.props.mapContainer.panTo(this.marker);
-      //google.maps.event.trigger(this.marker, 'click');
-  }
-  componentWillUnmount() {
-    //this.marker.setMap(null);
-  }
-  componentDidMount() {
-    this.marker = this.props.mapContainer.addMarker(
-        this.props.item.geometryLocation,
-        this.props.index, 
-        el => ReactDOM.render(<SportiveInfoWindow item={this.props.item}/>, el)
-        );
-  }
-  render() {                        
-    return (<EventInfoCard item={this.props.item} onMarkerClick={this.handleCardMarkerClick}/>);
-  }
-}
-*/
-
 export default class EventList extends React.Component {
     render() {
         return (
-            <div>
+            <div id="sportiveList">
                 {this.props.events.map((ev, i) => {
-                    return <EventInfoCard key={i} item={ev} />  
+                    return <EventInfoCard key={i} item={ev} onClick={this.props.onClick} />  
                 })}
             </div>
         )

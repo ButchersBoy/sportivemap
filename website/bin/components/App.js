@@ -1,5 +1,4 @@
 import React from 'react'
-import SideBar from './SideBar'
 import FilteredEventList from '../containers/FilteredEventList'
 import DateFilterContainer from '../containers/DateFilterContainer'
 import SideBarLinkContainer from '../containers/SideBarLinkContainer'
@@ -7,9 +6,8 @@ import SideBarLinkContainer from '../containers/SideBarLinkContainer'
 const App = () => (    
     <div className={"ui pushable"} id="app-container">
         <div className={"ui sidebar"}>            
-            <FilteredEventList test={"hello world"}  />
-        </div>
-        
+            <FilteredEventList  />
+        </div>        
         <div className={"pusher"}>        
             <div className={"ui container"}>
                 <div className={"header"}>                

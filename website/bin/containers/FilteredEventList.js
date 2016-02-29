@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { ADD_EVENT, addEvent } from '../actions/index.js'
+import { ADD_EVENT, addEvent, setSelectedEvent } from '../actions/index.js'
 import EventList from '../components/EventList.js'
 
 
@@ -12,7 +12,9 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => {
-    return {}    
+    return {
+        onClick : (item) => dispatch(setSelectedEvent(item))
+    }    
 }
 
 const FilteredEventList = connect(

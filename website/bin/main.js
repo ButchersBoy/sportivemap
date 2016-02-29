@@ -9,6 +9,17 @@ import { Provider } from 'react-redux'
 import app from './reducers/index';
 import App from './components/App'
 
+class SportiveInfoWindow extends React.Component {
+    render() {
+        return (
+            <div className={"ui"}>
+                <div className={"header"}>{this.props.item.name}</div>
+                <div>{Moment(this.props.item.date).format("dddd, MMMM Do YYYY")}</div>
+                <div><a href={this.props.item.indexerUrl} target="_blank">Website</a></div>
+            </div>);
+    }
+}
+
 class MapContainer {
   constructor(elementId, geo, events) {
       this.elementId = elementId;
@@ -30,7 +41,8 @@ class MapContainer {
         return { 
           event : e, 
           index : i, 
-          marker : this.addMarker(e.geometryLocation, i, () => {}),
+          marker : this.addMarker(e.geometryLocation, i, 
+            el => ReactDOM.render(<SportiveInfoWindow item={e}/>, el)),
           isActive : false
           };        
       })
@@ -56,6 +68,11 @@ class MapContainer {
     return marker;   
   }    
   setFilter(dateFilter) {
+    if (this.activeInfoWindow)
+    {
+      this.activeInfoWindow.close();
+      this.activeInfoWindow = null;
+    }
     this.items.forEach(i => {
       if (dateFilter.logic(i.event.date))
       {
@@ -71,8 +88,17 @@ class MapContainer {
           i.isActive = false;
         }        
       }      
-    })
-    
+    })    
+  }
+  focus(event) {
+    for (var index = 0; index < this.items.length; index++) {
+      if (this.items[index].event == event)
+      {
+        this.map.panTo(this.items[index].marker.getPosition());
+        google.maps.event.trigger(this.items[index].marker, 'click');
+        return;        
+      }      
+    }
   }
   panTo(marker) {
       this.map.panTo(marker.getPosition());
@@ -97,9 +123,11 @@ function initMap() {
         var mapContainer = new MapContainer("googleMap", { lat: 54.0684078, lng: -2.0086898}, store.getState().events);
         mapContainer.setFilter(store.getState().dateFilter);      
         
-        let unsubscribe = store.subscribe(() =>
+        let unsubscribe = store.subscribe(() => {
+          console.log(store.getState())
           mapContainer.setFilter(store.getState().dateFilter)
-        )          
+          mapContainer.focus(store.getState().selectedEvent)
+        })          
     });
 }
 

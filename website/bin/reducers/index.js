@@ -1,6 +1,6 @@
 import { combineReducers }  from 'redux';
 //TODO move these items from actions/index into their own actions file
-import { SET_SIDEBAR_VISIBILITY, ADD_EVENT, Visibility } from '../actions/index';
+import { SET_SIDEBAR_VISIBILITY, ADD_EVENT, SELECT_EVENT, Visibility } from '../actions/index';
 import dateFilter from './dateFilter';
 const { HIDE } = Visibility;
 
@@ -37,8 +37,17 @@ const events = (state = [], action) => {
     } 
 }
 
+const selectedEvent = (state = null, action) => {    
+    switch (action.type) {
+        case SELECT_EVENT:
+            return action.event;
+        default:
+            return state
+    }
+}
+
 const app = combineReducers({
-    sideBarVisibility, events, dateFilter
+    sideBarVisibility, events, dateFilter, selectedEvent
 })
 
 export default app;

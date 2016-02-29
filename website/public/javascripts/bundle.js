@@ -23870,7 +23870,7 @@ arguments[4][41][0].apply(exports,arguments)
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.addEvent = exports.setDateFilter = exports.setSideBarVisibility = exports.DateFilterKinds = exports.DateFilterKind = exports.DateFilter = exports.Visibility = exports.FILTER_EVENT_DATE = exports.ADD_EVENT = exports.SET_SIDEBAR_VISIBILITY = undefined;
+exports.addEvent = exports.setSelectedEvent = exports.setDateFilter = exports.setSideBarVisibility = exports.DateFilterKinds = exports.DateFilterKind = exports.DateFilter = exports.Visibility = exports.SELECT_EVENT = exports.FILTER_EVENT_DATE = exports.ADD_EVENT = exports.SET_SIDEBAR_VISIBILITY = undefined;
 
 var _moment = require('moment');
 
@@ -23885,6 +23885,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var SET_SIDEBAR_VISIBILITY = exports.SET_SIDEBAR_VISIBILITY = 'SET_SIDEBAR_VISIBILITY';
 var ADD_EVENT = exports.ADD_EVENT = 'ADD_EVENT';
 var FILTER_EVENT_DATE = exports.FILTER_EVENT_DATE = 'FILTER_EVENT_DATE';
+var SELECT_EVENT = exports.SELECT_EVENT = 'SELECT_EVENT';
 
 //other constants
 
@@ -23941,6 +23942,10 @@ var setDateFilter = exports.setDateFilter = function setDateFilter(kind) {
     return { type: FILTER_EVENT_DATE, kind: kind };
 };
 
+var setSelectedEvent = exports.setSelectedEvent = function setSelectedEvent(event) {
+    return { type: SELECT_EVENT, event: event };
+};
+
 //do we need?   maybe if we are starting store before initial ajax
 var nextEventId = 0;
 var addEvent = exports.addEvent = function addEvent(event) {
@@ -23957,10 +23962,6 @@ Object.defineProperty(exports, "__esModule", {
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
-
-var _SideBar = require('./SideBar');
-
-var _SideBar2 = _interopRequireDefault(_SideBar);
 
 var _FilteredEventList = require('../containers/FilteredEventList');
 
@@ -23983,7 +23984,7 @@ var App = function App() {
         _react2.default.createElement(
             'div',
             { className: "ui sidebar" },
-            _react2.default.createElement(_FilteredEventList2.default, { test: "hello world" })
+            _react2.default.createElement(_FilteredEventList2.default, null)
         ),
         _react2.default.createElement(
             'div',
@@ -24015,7 +24016,7 @@ var App = function App() {
 
 exports.default = App;
 
-},{"../containers/DateFilterContainer":188,"../containers/FilteredEventList":189,"../containers/SideBarLinkContainer":190,"./SideBar":185,"react":170}],183:[function(require,module,exports){
+},{"../containers/DateFilterContainer":186,"../containers/FilteredEventList":187,"../containers/SideBarLinkContainer":188,"react":170}],183:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -24177,13 +24178,21 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var EventInfoCard = exports.EventInfoCard = function (_React$Component) {
     _inherits(EventInfoCard, _React$Component);
 
-    function EventInfoCard() {
+    function EventInfoCard(props) {
         _classCallCheck(this, EventInfoCard);
 
-        return _possibleConstructorReturn(this, Object.getPrototypeOf(EventInfoCard).apply(this, arguments));
+        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(EventInfoCard).call(this, props));
+
+        _this.handleMarkerClick = _this.handleMarkerClick.bind(_this);
+        return _this;
     }
 
     _createClass(EventInfoCard, [{
+        key: 'handleMarkerClick',
+        value: function handleMarkerClick() {
+            this.props.onClick(this.props.item);
+        }
+    }, {
         key: 'render',
         value: function render() {
             return _react2.default.createElement(
@@ -24224,32 +24233,6 @@ var EventInfoCard = exports.EventInfoCard = function (_React$Component) {
     return EventInfoCard;
 }(_react2.default.Component);
 
-/*
-class Event extends React.Component {
-    constructor(props) {
-        super(props);
-        this.handleCardMarkerClick = this.handleCardMarkerClick.bind(this);
-    }
-  handleCardMarkerClick() {
-      //this.props.mapContainer.panTo(this.marker);
-      //google.maps.event.trigger(this.marker, 'click');
-  }
-  componentWillUnmount() {
-    //this.marker.setMap(null);
-  }
-  componentDidMount() {
-    this.marker = this.props.mapContainer.addMarker(
-        this.props.item.geometryLocation,
-        this.props.index, 
-        el => ReactDOM.render(<SportiveInfoWindow item={this.props.item}/>, el)
-        );
-  }
-  render() {                        
-    return (<EventInfoCard item={this.props.item} onMarkerClick={this.handleCardMarkerClick}/>);
-  }
-}
-*/
-
 var EventList = function (_React$Component2) {
     _inherits(EventList, _React$Component2);
 
@@ -24262,11 +24245,13 @@ var EventList = function (_React$Component2) {
     _createClass(EventList, [{
         key: 'render',
         value: function render() {
+            var _this3 = this;
+
             return _react2.default.createElement(
                 'div',
-                null,
+                { id: 'sportiveList' },
                 this.props.events.map(function (ev, i) {
-                    return _react2.default.createElement(EventInfoCard, { key: i, item: ev });
+                    return _react2.default.createElement(EventInfoCard, { key: i, item: ev, onClick: _this3.props.onClick });
                 })
             );
         }
@@ -24278,121 +24263,6 @@ var EventList = function (_React$Component2) {
 exports.default = EventList;
 
 },{"moment":31,"react":170}],185:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _SideBarItem = require('./SideBarItem');
-
-var _SideBarItem2 = _interopRequireDefault(_SideBarItem);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var SideBar = function SideBar(_ref) {
-    var isVisible = _ref.isVisible;
-    var onEventClick = _ref.onEventClick;
-    return _react2.default.createElement(
-        'div',
-        { onClick: onEventClick },
-        _react2.default.createElement(
-            'span',
-            null,
-            '"SIDE BAR DOGS!" + ',
-            isVisible
-        )
-    );
-};
-
-exports.default = SideBar;
-
-},{"./SideBarItem":186,"react":170}],186:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = require("react");
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var SportiveInfoCard = function (_React$Component) {
-    _inherits(SportiveInfoCard, _React$Component);
-
-    function SportiveInfoCard(props) {
-        _classCallCheck(this, SportiveInfoCard);
-
-        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(SportiveInfoCard).call(this, props));
-
-        _this.handleMarkerClick = _this.handleMarkerClick.bind(_this);
-        return _this;
-    }
-
-    _createClass(SportiveInfoCard, [{
-        key: "handleMarkerClick",
-        value: function handleMarkerClick() {
-            this.props.onMarkerClick();
-        }
-    }, {
-        key: "render",
-        value: function render() {
-            return _react2.default.createElement(
-                "div",
-                { className: "ui centered card" },
-                _react2.default.createElement(
-                    "div",
-                    { className: "content clickable", onClick: this.handleMarkerClick },
-                    _react2.default.createElement("i", { className: "right floated marker icon" }),
-                    _react2.default.createElement(
-                        "div",
-                        { className: "header" },
-                        this.props.item.name
-                    )
-                ),
-                _react2.default.createElement(
-                    "div",
-                    { className: "content" },
-                    _react2.default.createElement(
-                        "div",
-                        null,
-                        Moment(this.props.item.date).format("dddd, MMMM Do YYYY")
-                    ),
-                    _react2.default.createElement(
-                        "div",
-                        null,
-                        _react2.default.createElement(
-                            "a",
-                            { href: this.props.item.indexerUrl, target: "_blank" },
-                            "Website"
-                        )
-                    )
-                )
-            );
-        }
-    }]);
-
-    return SportiveInfoCard;
-}(_react2.default.Component);
-
-exports.default = SportiveInfoCard;
-
-},{"react":170}],187:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -24425,7 +24295,7 @@ SideBarLink.propTypes = {
 
 exports.default = SideBarLink;
 
-},{"react":170}],188:[function(require,module,exports){
+},{"react":170}],186:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -24461,7 +24331,7 @@ var DateFilterContainer = (0, _reactRedux.connect)(mapStateToProps, mapDispatchT
 
 exports.default = DateFilterContainer;
 
-},{"../actions/index":181,"../components/DateFilter":183,"react-redux":35}],189:[function(require,module,exports){
+},{"../actions/index":181,"../components/DateFilter":183,"react-redux":35}],187:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -24489,14 +24359,18 @@ var mapStateToProps = function mapStateToProps(state) {
 };
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-    return {};
+    return {
+        onClick: function onClick(item) {
+            return dispatch((0, _index.setSelectedEvent)(item));
+        }
+    };
 };
 
 var FilteredEventList = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(_EventList2.default);
 
 exports.default = FilteredEventList;
 
-},{"../actions/index.js":181,"../components/EventList.js":184,"react-redux":35}],190:[function(require,module,exports){
+},{"../actions/index.js":181,"../components/EventList.js":184,"react-redux":35}],188:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -24531,7 +24405,7 @@ var SideBarLinkContainer = (0, _reactRedux.connect)(mapStateToProps, mapDispatch
 
 exports.default = SideBarLinkContainer;
 
-},{"../actions":181,"../components/SideBarLink":187,"react-redux":35}],191:[function(require,module,exports){
+},{"../actions":181,"../components/SideBarLink":185,"react-redux":35}],189:[function(require,module,exports){
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -24552,13 +24426,58 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Moment = require('moment');
 
+var SportiveInfoWindow = function (_React$Component) {
+  _inherits(SportiveInfoWindow, _React$Component);
+
+  function SportiveInfoWindow() {
+    _classCallCheck(this, SportiveInfoWindow);
+
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(SportiveInfoWindow).apply(this, arguments));
+  }
+
+  _createClass(SportiveInfoWindow, [{
+    key: 'render',
+    value: function render() {
+      return React.createElement(
+        'div',
+        { className: "ui" },
+        React.createElement(
+          'div',
+          { className: "header" },
+          this.props.item.name
+        ),
+        React.createElement(
+          'div',
+          null,
+          Moment(this.props.item.date).format("dddd, MMMM Do YYYY")
+        ),
+        React.createElement(
+          'div',
+          null,
+          React.createElement(
+            'a',
+            { href: this.props.item.indexerUrl, target: '_blank' },
+            'Website'
+          )
+        )
+      );
+    }
+  }]);
+
+  return SportiveInfoWindow;
+}(React.Component);
+
 var MapContainer = function () {
   function MapContainer(elementId, geo, events) {
-    var _this = this;
+    var _this2 = this;
 
     _classCallCheck(this, MapContainer);
 
@@ -24581,7 +24500,9 @@ var MapContainer = function () {
       return {
         event: e,
         index: i,
-        marker: _this.addMarker(e.geometryLocation, i, function () {}),
+        marker: _this2.addMarker(e.geometryLocation, i, function (el) {
+          return ReactDOM.render(React.createElement(SportiveInfoWindow, { item: e }), el);
+        }),
         isActive: false
       };
     });
@@ -24590,7 +24511,7 @@ var MapContainer = function () {
   _createClass(MapContainer, [{
     key: 'addMarker',
     value: function addMarker(geo, index, renderer) {
-      var _this2 = this;
+      var _this3 = this;
 
       var marker = new google.maps.Marker({
         position: new google.maps.LatLng(geo.lat, geo.lng),
@@ -24601,25 +24522,27 @@ var MapContainer = function () {
         content: '<div id="' + id + '"></div>'
       });
       marker.addListener('click', function () {
-        if (_this2.activeInfoWindow) _this2.activeInfoWindow.close();
-        infoWindow.open(_this2.map, marker);
+        if (_this3.activeInfoWindow) _this3.activeInfoWindow.close();
+        infoWindow.open(_this3.map, marker);
         renderer(document.getElementById(id));
-        _this2.activeInfoWindow = infoWindow;
+        _this3.activeInfoWindow = infoWindow;
       });
-
-      //marker.setMap(this.map);
 
       return marker;
     }
   }, {
     key: 'setFilter',
     value: function setFilter(dateFilter) {
-      var _this3 = this;
+      var _this4 = this;
 
+      if (this.activeInfoWindow) {
+        this.activeInfoWindow.close();
+        this.activeInfoWindow = null;
+      }
       this.items.forEach(function (i) {
         if (dateFilter.logic(i.event.date)) {
           if (!i.isActive) {
-            i.marker.setMap(_this3.map);
+            i.marker.setMap(_this4.map);
             i.isActive = true;
           }
         } else {
@@ -24629,6 +24552,17 @@ var MapContainer = function () {
           }
         }
       });
+    }
+  }, {
+    key: 'focus',
+    value: function focus(event) {
+      for (var index = 0; index < this.items.length; index++) {
+        if (this.items[index].event == event) {
+          this.map.panTo(this.items[index].marker.getPosition());
+          google.maps.event.trigger(this.items[index].marker, 'click');
+          return;
+        }
+      }
     }
   }, {
     key: 'panTo',
@@ -24657,14 +24591,16 @@ function initMap() {
     mapContainer.setFilter(store.getState().dateFilter);
 
     var unsubscribe = store.subscribe(function () {
-      return mapContainer.setFilter(store.getState().dateFilter);
+      console.log(store.getState());
+      mapContainer.setFilter(store.getState().dateFilter);
+      mapContainer.focus(store.getState().selectedEvent);
     });
   });
 }
 
 google.maps.event.addDomListener(window, 'load', initMap);
 
-},{"./components/App":182,"./reducers/index":193,"moment":31,"react":170,"react-dom":32,"react-redux":35,"redux":176}],192:[function(require,module,exports){
+},{"./components/App":182,"./reducers/index":191,"moment":31,"react":170,"react-dom":32,"react-redux":35,"redux":176}],190:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -24687,7 +24623,7 @@ var dateFilter = function dateFilter() {
 
 exports.default = dateFilter;
 
-},{"../actions/index":181}],193:[function(require,module,exports){
+},{"../actions/index":181}],191:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -24747,10 +24683,22 @@ var events = function events() {
     }
 };
 
+var selectedEvent = function selectedEvent() {
+    var state = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+    var action = arguments[1];
+
+    switch (action.type) {
+        case _index.SELECT_EVENT:
+            return action.event;
+        default:
+            return state;
+    }
+};
+
 var app = (0, _redux.combineReducers)({
-    sideBarVisibility: sideBarVisibility, events: events, dateFilter: _dateFilter2.default
+    sideBarVisibility: sideBarVisibility, events: events, dateFilter: _dateFilter2.default, selectedEvent: selectedEvent
 });
 
 exports.default = app;
 
-},{"../actions/index":181,"./dateFilter":192,"redux":176}]},{},[191]);
+},{"../actions/index":181,"./dateFilter":190,"redux":176}]},{},[189]);
