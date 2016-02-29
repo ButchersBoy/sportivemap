@@ -22,9 +22,9 @@ class DateFilterItem extends React.Component {
 export default class DateFilter extends React.Component {
   constructor(props) {
     super(props);    
-    this.handleDateFilterItemClick = this.handleDateFilterItemClick.bind(this);    
+    this.handleItemClick = this.handleItemClick.bind(this);    
   }
-  handleDateFilterItemClick(item) {
+  handleItemClick(item) {
     this.props.onFilterClick(item);
   }
   render() {       
@@ -33,13 +33,13 @@ export default class DateFilter extends React.Component {
       return (<DateFilterItem description={item.long}                               
                               key={item.index}                               
                               isSelected={this.props.selectedFilter.index >= item.index}
-                              onClick={() => this.handleDateFilterItemClick(item)} />);
+                              onClick={() => this.handleItemClick(item)} />);
     });   
     var littleNodes = this.props.allFilters.map((item) => {
       return (<DateFilterItem description={item.short}
                               key={item.index}                               
                               isSelected={this.props.selectedFilter.index >= item.index}
-                              onClick={() => this.handleDateFilterItemClick(item)} />);
+                              onClick={() => this.handleItemClick(item)} />);
     });         
     return (
       <div>

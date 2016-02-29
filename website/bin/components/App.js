@@ -5,7 +5,7 @@ import DateFilterContainer from '../containers/DateFilterContainer'
 import SideBarLinkContainer from '../containers/SideBarLinkContainer'
 
 const App = () => (    
-    <div>
+    <div className={"ui pushable"} id="app-container">
         <div className={"ui sidebar"}>            
             <FilteredEventList />
         </div>

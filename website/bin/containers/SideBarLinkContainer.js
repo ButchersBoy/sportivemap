@@ -10,7 +10,8 @@ const mapDispatchToProps = (dispatch) => {
     return {
         onClick: () => {
             $('.ui.sidebar')
-                .sidebar('setting', 'transition', 'overlay')
+                .sidebar({ context: $('#app-container') })           
+                .sidebar('setting', 'transition', 'overlay')     
                 .sidebar('toggle');           
             //TODO decide which way we are going to do this!!! 
             dispatch(setSideBarVisibility(Visibility.SHOW));            

@@ -45,8 +45,6 @@ class Event extends React.Component {
 
 export default class EventList extends React.Component {
     render() {
-        console.log("render " + this.props.events.length)
-        console.log("render " + this.props)
         return (
             <div>
                 {this.props.events.map((ev, i) => {

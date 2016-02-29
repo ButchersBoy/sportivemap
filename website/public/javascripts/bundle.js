@@ -23979,8 +23979,12 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var App = function App() {
     return _react2.default.createElement(
         'div',
-        null,
-        _react2.default.createElement('div', { className: "ui sidebar" }),
+        { className: "ui  pushable", id: 'app-container' },
+        _react2.default.createElement(
+            'div',
+            { className: "ui sidebar" },
+            _react2.default.createElement(_FilteredEventList2.default, null)
+        ),
         _react2.default.createElement(
             'div',
             { className: "pusher" },
@@ -24001,8 +24005,7 @@ var App = function App() {
                         'Sportives in the next:'
                     ),
                     _react2.default.createElement(_DateFilterContainer2.default, null),
-                    _react2.default.createElement(_SideBarLinkContainer2.default, null),
-                    _react2.default.createElement(_FilteredEventList2.default, null)
+                    _react2.default.createElement(_SideBarLinkContainer2.default, null)
                 ),
                 _react2.default.createElement('div', { id: 'googleMap' })
             )
@@ -24089,13 +24092,13 @@ var DateFilter = function (_React$Component2) {
 
     var _this3 = _possibleConstructorReturn(this, Object.getPrototypeOf(DateFilter).call(this, props));
 
-    _this3.handleDateFilterItemClick = _this3.handleDateFilterItemClick.bind(_this3);
+    _this3.handleItemClick = _this3.handleItemClick.bind(_this3);
     return _this3;
   }
 
   _createClass(DateFilter, [{
-    key: "handleDateFilterItemClick",
-    value: function handleDateFilterItemClick(item) {
+    key: "handleItemClick",
+    value: function handleItemClick(item) {
       this.props.onFilterClick(item);
     }
   }, {
@@ -24111,7 +24114,7 @@ var DateFilter = function (_React$Component2) {
           key: item.index,
           isSelected: _this4.props.selectedFilter.index >= item.index,
           onClick: function onClick() {
-            return _this4.handleDateFilterItemClick(item);
+            return _this4.handleItemClick(item);
           } });
       });
       var littleNodes = this.props.allFilters.map(function (item) {
@@ -24119,7 +24122,7 @@ var DateFilter = function (_React$Component2) {
           key: item.index,
           isSelected: _this4.props.selectedFilter.index >= item.index,
           onClick: function onClick() {
-            return _this4.handleDateFilterItemClick(item);
+            return _this4.handleItemClick(item);
           } });
       });
       return _react2.default.createElement(
@@ -24266,8 +24269,6 @@ var EventList = function (_React$Component2) {
     _createClass(EventList, [{
         key: 'render',
         value: function render() {
-            console.log("render " + this.props.events.length);
-            console.log("render " + this.props);
             return _react2.default.createElement(
                 'div',
                 null,
@@ -24526,7 +24527,7 @@ var mapStateToProps = function mapStateToProps(state) {
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
     return {
         onClick: function onClick() {
-            $('.ui.sidebar').sidebar('setting', 'transition', 'overlay').sidebar('toggle');
+            $('.ui.sidebar').sidebar({ context: $('#app-container') }).sidebar('setting', 'transition', 'overlay').sidebar('toggle');
             //TODO decide which way we are going to do this!!!
             dispatch((0, _actions.setSideBarVisibility)(_actions.Visibility.SHOW));
         }

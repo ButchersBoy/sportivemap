@@ -5,6 +5,9 @@
 .pusher {
     height: 100%;
 }
+#root {
+    height: 100%;
+}
 .ui.container {
     height: 100%;
 }
