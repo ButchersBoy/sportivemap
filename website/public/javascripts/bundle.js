@@ -24299,7 +24299,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var Search = function Search(_ref) {
 		var _onChange = _ref.onChange;
+		var text = _ref.text;
 
+		console.log("INIT " + text);
 		return _react2.default.createElement(
 				"div",
 				{ className: "ui search" },
@@ -24307,6 +24309,7 @@ var Search = function Search(_ref) {
 						"div",
 						{ className: "ui icon input" },
 						_react2.default.createElement("input", { className: "prompt", type: "text", placeholder: "Search...",
+								value: text,
 								onChange: function onChange(e) {
 										return _onChange(e.target.value);
 								} }),
@@ -24704,7 +24707,7 @@ var _Search2 = _interopRequireDefault(_Search);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var mapStateToProps = function mapStateToProps(state) {
-    return {};
+    return { text: state.searchText };
 };
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {

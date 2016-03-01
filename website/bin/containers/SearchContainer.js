@@ -3,7 +3,7 @@ import { setSearchText } from '../actions'
 import Search from '../components/Search'
 
 const mapStateToProps = (state) => {
-    return {}
+    return { text : state.searchText }
 }
 
 const mapDispatchToProps = (dispatch) => {
