@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react'
 
-const Search = ({onChange, text}) => {
-	console.log("INIT " + text)
+const Search = ({onChange, text}) => {	
     return (
         <div className={"ui search"}>
 			<div className={"ui icon input"}>

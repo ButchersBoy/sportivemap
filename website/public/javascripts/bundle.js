@@ -24301,7 +24301,6 @@ var Search = function Search(_ref) {
 		var _onChange = _ref.onChange;
 		var text = _ref.text;
 
-		console.log("INIT " + text);
 		return _react2.default.createElement(
 				"div",
 				{ className: "ui search" },
@@ -24776,6 +24775,17 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+function findEvent(events, date, namePath) {
+	for (var index = 0; index < events.length; index++) {
+		var element = events[index];
+		if ((0, _moment2.default)(element.date).startOf('day').isSame(date) && namePath == element.namePath) {
+
+			return element;
+		}
+	}
+	return null;
+}
+
 var UrlPathContainer = function () {
 	function UrlPathContainer(store, region) {
 		_classCallCheck(this, UrlPathContainer);
@@ -24795,27 +24805,24 @@ var UrlPathContainer = function () {
 				if (pathParts[1].toLowerCase() == "e" && pathParts.length == 4) {
 					var date = (0, _moment2.default)(pathParts[2], "YYYY-MM-DD");
 					if (date.isValid()) {
-						var name = pathParts[3];
-						var events = this.store.getState().events;
+						(function () {
+							var name = pathParts[3];
+							var events = _this.store.getState().events;
 
-						for (var index = 0; index < events.length; index++) {
-							var element = events[index];
-							if ((0, _moment2.default)(element.date).startOf('day').isSame(date) && name == element.namePath) {
-
-								this.store.dispatch((0, _index.setDateFilter)(new _index.DateFilter(9999, 9999, 9999, function (e) {
-									return e == element;
+							var event = findEvent(events, date, name);
+							if (event) {
+								_this.store.dispatch((0, _index.setDateFilter)(new _index.DateFilter(9999, 9999, 9999, function (e) {
+									return e == event;
 								})));
-								this.store.dispatch((0, _index.setSelectedEvent)(element));
-
-								break;
+								_this.store.dispatch((0, _index.setSelectedEvent)(event));
 							}
-						}
+						})();
 					}
 				} else if (pathParts[1].toLowerCase() == "f" && pathParts.length >= 3) {
 					(function () {
-						var dateFilterName = pathParts[2].toUpperCase();
+						var dateFilterCode = pathParts[2].toUpperCase();
 						var dateFilterMatches = _index.DateFilterKinds.filter(function (df) {
-							return df.short == dateFilterName;
+							return df.short == dateFilterCode;
 						});
 						if (dateFilterMatches.length > 0) {
 							_this.store.dispatch((0, _index.setDateFilter)(dateFilterMatches[0]));
@@ -24826,8 +24833,40 @@ var UrlPathContainer = function () {
 					})();
 				}
 			}
+
+			window.onpopstate = function (e) {
+				var _this2 = this;
+
+				this.popping = true;
+				if (e.state) {
+					if (e.state.date && e.state.namePath) {
+						(function () {
+							var event = findEvent(_this2.store.getState().events, (0, _moment2.default)(e.state.date), e.state.namePath);
+							if (event) {
+								_this2.store.dispatch((0, _index.setDateFilter)(new _index.DateFilter(9999, 9999, 9999, function (e) {
+									return e == event;
+								})));
+								_this2.store.dispatch((0, _index.setSelectedEvent)(event));
+							}
+						})();
+					}
+					if (e.state.dateFilterCode) {
+						var dateFilterMatches = _index.DateFilterKinds.filter(function (df) {
+							return df.short == e.state.dateFilterCode;
+						});
+						if (dateFilterMatches.length > 0) {
+							this.store.dispatch((0, _index.setDateFilter)(dateFilterMatches[0]));
+						}
+					}
+					if (e.state.searchText) {
+						this.store.dispatch((0, _index.setSearchText)(e.state.searchText));
+					}
+				}
+				this.popping = false;
+			}.bind(this);
+
 			this.store.subscribe(function () {
-				_this.buildUrl(_this.store.getState());
+				if (!_this.popping) _this.buildUrl(_this.store.getState());
 			});
 		}
 	}, {
@@ -24836,7 +24875,7 @@ var UrlPathContainer = function () {
 			if (state.selectedEvent) {
 				var date = (0, _moment2.default)(state.selectedEvent.date).format('YYYY-MM-DD');
 				var path = "/" + this.region + "/e/" + date + "/" + state.selectedEvent.namePath;
-				window.history.pushState({}, null, path);
+				window.history.pushState({ date: state.selectedEvent.date, namePath: state.selectedEvent.namePath }, null, path);
 			} else {
 				var code = _index.DateFilterKinds[_index.DateFilterKinds.length - 1].short;
 				if (state.dateFilter) code = state.dateFilter.short;
@@ -24844,7 +24883,7 @@ var UrlPathContainer = function () {
 				var path = "/" + this.region + "/f/" + code;
 				if (state.searchText) path += "/" + state.searchText;
 
-				window.history.pushState({}, null, path);
+				window.history.pushState({ dateFilterCode: code, searchText: state.searchText }, null, path);
 			}
 		}
 	}]);

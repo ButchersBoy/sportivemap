@@ -1,6 +1,19 @@
 import { setSelectedEvent, setDateFilter, setSearchText, DateFilter, DateFilterKinds } from '../actions/index'
 import moment from 'moment'
 
+
+function findEvent(events, date, namePath) {
+	for (var index = 0; index < events.length; index++) {
+		var element = events[index];
+		if (moment(element.date).startOf('day').isSame(date)
+			&& namePath == element.namePath) {
+
+			return element															
+		}                    
+	}
+	return null	
+}
+
 export default class UrlPathContainer {
 	constructor(store, region) {
 		this.store = store
@@ -18,22 +31,16 @@ export default class UrlPathContainer {
 					let name = pathParts[3];					
 					let events = this.store.getState().events;
 					
-					for (var index = 0; index < events.length; index++) {
-						var element = events[index];
-						if (moment(element.date).startOf('day').isSame(date)
-							&& name == element.namePath) {
-																			
-							this.store.dispatch(setDateFilter(new DateFilter(9999, 9999, 9999, e => e == element)))
-							this.store.dispatch(setSelectedEvent(element))
-							
-							break                            
-						}                    
-					}                                        
+					let event = findEvent(events, date, name)
+					if (event) {
+						this.store.dispatch(setDateFilter(new DateFilter(9999, 9999, 9999, e => e == event)))
+						this.store.dispatch(setSelectedEvent(event))						
+					}
 				}                
 			}            
 			else if (pathParts[1].toLowerCase() == "f" && pathParts.length >= 3) {
-				let dateFilterName = pathParts[2].toUpperCase()
-				let dateFilterMatches = DateFilterKinds.filter(df => df.short == dateFilterName)
+				let dateFilterCode = pathParts[2].toUpperCase()
+				let dateFilterMatches = DateFilterKinds.filter(df => df.short == dateFilterCode)
 				if (dateFilterMatches.length > 0) {
 					this.store.dispatch(setDateFilter(dateFilterMatches[0]))
 				}												
@@ -42,8 +49,34 @@ export default class UrlPathContainer {
 				}
 			}
 		}
+		
+		window.onpopstate = function(e){
+			this.popping = true
+			if(e.state)
+			{
+				if (e.state.date && e.state.namePath) {
+					let event = findEvent(this.store.getState().events, moment(e.state.date), e.state.namePath)
+					if (event) {
+						this.store.dispatch(setDateFilter(new DateFilter(9999, 9999, 9999, e => e == event)))
+						this.store.dispatch(setSelectedEvent(event))						
+					}					
+				}
+				if (e.state.dateFilterCode) {
+					let dateFilterMatches = DateFilterKinds.filter(df => df.short == e.state.dateFilterCode)
+					if (dateFilterMatches.length > 0) {
+						this.store.dispatch(setDateFilter(dateFilterMatches[0]))
+					}
+				}
+				if (e.state.searchText) {
+					this.store.dispatch(setSearchText(e.state.searchText))
+				}				
+			}
+			this.popping = false
+		}.bind(this);
+		
 		this.store.subscribe(() => {
-			this.buildUrl(this.store.getState())
+			if (!this.popping)
+				this.buildUrl(this.store.getState())
 		})
 	}
 	buildUrl(state) {		
@@ -51,7 +84,7 @@ export default class UrlPathContainer {
 		{			
 			let date = moment(state.selectedEvent.date).format('YYYY-MM-DD')
 			let path = "/" + this.region + "/e/" + date + "/" + state.selectedEvent.namePath						
-			window.history.pushState({}, null, path)
+			window.history.pushState({ date : state.selectedEvent.date, namePath : state.selectedEvent.namePath }, null, path)
 		}				
 		else
 		{	
@@ -63,7 +96,7 @@ export default class UrlPathContainer {
 			if (state.searchText)
 				path += "/" + state.searchText  
 			
-			window.history.pushState({}, null, path)
+			window.history.pushState({ dateFilterCode : code, searchText : state.searchText}, null, path)
 		}				
 	}	
 }
