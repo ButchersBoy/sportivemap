@@ -36,7 +36,7 @@ export default class MapContainer {
   addMarker(event) {    
     var marker=new google.maps.Marker({
       position:new google.maps.LatLng(event.geometryLocation.lat, event.geometryLocation.lng),
-      icon:'./images/coggy32.png'
+      icon:'/images/coggy32.png'
     });    
     
     marker.addListener('click', () => {
@@ -47,7 +47,7 @@ export default class MapContainer {
   }    
   setFilter(dateFilter, text) {
     this.items.forEach(i => {
-      if (dateFilter.logic(i.event.date) && IsSearchMatch(i.event, text))
+      if (dateFilter.logic(i.event) && IsSearchMatch(i.event, text))
       {
         if (!i.isVisible) {
           i.marker.setMap(this.map);
@@ -91,15 +91,18 @@ export default class MapContainer {
         this.activeEvent = { infoWindow, event : this.items[index].event};         
         this.map.panTo(this.items[index].marker.getPosition());             
 
-        var render = () => {
+        var render = (retries, max) => {
           var el = document.getElementById(elementId);
-          if (!el) return false;
-          ReactDOM.render(<SportiveInfoWindow item={this.items[index].event}/>, el);
-          return true;
+          if (!el) {
+            if (retries++ < max) setTimeout(() => render(retries, max), 100)
+            return
+          };
+          ReactDOM.render(<SportiveInfoWindow item={this.items[index].event}/>, el)
+          return true
         }
         
         //Chrome/maps not ready on very first item...
-        if (!render()) setTimeout(render, 100);
+        render(0, 3);
                    
         return;        
       }      

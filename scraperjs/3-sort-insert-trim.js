@@ -24,6 +24,14 @@ events.sort(function(a, b) {
 
 console.log("Sorted: " + events.length);
 
+function removeUrlCharacters(text) {
+	return text.replace(/\//g, "-").replace(/ /g, "-").replace(/&/g, "-and-").replace(/\?/g, "-").replace(/#/g, "-");
+}
+
+for (var i = events.length - 1; i >= 0; i--) {
+	events[i].namePath = removeUrlCharacters(events[i].name);
+};
+
 /*
 for (var i = events.length - 1; i >= 0; i--) {
 	console.log(events[i].date);

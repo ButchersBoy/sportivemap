@@ -4,7 +4,7 @@ import EventList from '../components/EventList.js'
 
 
 const getVisibleEvents = (events, dateFilter, searchText) => {        
-    return events.filter(e => dateFilter.logic(e.date) && IsSearchMatch(e, searchText));
+    return events.filter(e => dateFilter.logic(e) && IsSearchMatch(e, searchText));
 }
 
 const mapStateToProps = (state) => {

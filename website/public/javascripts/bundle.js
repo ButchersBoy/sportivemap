@@ -23909,33 +23909,33 @@ var IsSearchMatch = exports.IsSearchMatch = function IsSearchMatch(event, text) 
     text = text.trim();
     if (text.length == 0) return true;
     var t = text.toLowerCase();
-    return event.name.toLowerCase().indexOf(text) >= 0 || event.formattedAddress.toLowerCase().indexOf(text) >= 0 || event.locationSummary.toLowerCase().indexOf(text) >= 0;
+    return event.name.toLowerCase().indexOf(t) >= 0 || event.formattedAddress.toLowerCase().indexOf(t) >= 0 || event.locationSummary.toLowerCase().indexOf(t) >= 0;
 };
 
 var isWithin = function isWithin(d, m) {
     return (0, _moment2.default)(d).isSameOrAfter((0, _moment2.default)().startOf('day')) && (0, _moment2.default)(d).isSameOrBefore(m);
 };
 var DateFilterKind = exports.DateFilterKind = {
-    W1: new DateFilter(0, "1 Week", "1W", function (d) {
-        return isWithin(d, (0, _moment2.default)().add(1, "w"));
+    W1: new DateFilter(0, "1 Week", "1W", function (e) {
+        return isWithin(e.date, (0, _moment2.default)().add(1, "w"));
     }),
-    W2: new DateFilter(1, "2 Weeks", "2W", function (d) {
-        return isWithin(d, (0, _moment2.default)().add(2, "w"));
+    W2: new DateFilter(1, "2 Weeks", "2W", function (e) {
+        return isWithin(e.date, (0, _moment2.default)().add(2, "w"));
     }),
-    M1: new DateFilter(2, "1 Month", "1M", function (d) {
-        return isWithin(d, (0, _moment2.default)().add(1, "M"));
+    M1: new DateFilter(2, "1 Month", "1M", function (e) {
+        return isWithin(e.date, (0, _moment2.default)().add(1, "M"));
     }),
-    M3: new DateFilter(3, "3 Months", "3M", function (d) {
-        return isWithin(d, (0, _moment2.default)().add(3, "M"));
+    M3: new DateFilter(3, "3 Months", "3M", function (e) {
+        return isWithin(e.date, (0, _moment2.default)().add(3, "M"));
     }),
-    M6: new DateFilter(4, "6 Months", "6M", function (d) {
-        return isWithin(d, (0, _moment2.default)().add(6, "M"));
+    M6: new DateFilter(4, "6 Months", "6M", function (e) {
+        return isWithin(e.date, (0, _moment2.default)().add(6, "M"));
     }),
-    M9: new DateFilter(5, "9 Months", "9M", function (d) {
-        return isWithin(d, (0, _moment2.default)().add(9, "M"));
+    M9: new DateFilter(5, "9 Months", "9M", function (e) {
+        return isWithin(e.date, (0, _moment2.default)().add(9, "M"));
     }),
-    Y1: new DateFilter(6, "1 Year", "1Y", function (d) {
-        return isWithin(d, (0, _moment2.default)().add(1, "y"));
+    Y1: new DateFilter(6, "1 Year", "1Y", function (e) {
+        return isWithin(e.date, (0, _moment2.default)().add(1, "y"));
     })
 };
 
@@ -24495,7 +24495,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var getVisibleEvents = function getVisibleEvents(events, dateFilter, searchText) {
     return events.filter(function (e) {
-        return dateFilter.logic(e.date) && (0, _index.IsSearchMatch)(e, searchText);
+        return dateFilter.logic(e) && (0, _index.IsSearchMatch)(e, searchText);
     });
 };
 
@@ -24588,7 +24588,7 @@ var MapContainer = function () {
 
       var marker = new google.maps.Marker({
         position: new google.maps.LatLng(event.geometryLocation.lat, event.geometryLocation.lng),
-        icon: './images/coggy32.png'
+        icon: '/images/coggy32.png'
       });
 
       marker.addListener('click', function () {
@@ -24603,7 +24603,7 @@ var MapContainer = function () {
       var _this3 = this;
 
       this.items.forEach(function (i) {
-        if (dateFilter.logic(i.event.date) && (0, _index.IsSearchMatch)(i.event, text)) {
+        if (dateFilter.logic(i.event) && (0, _index.IsSearchMatch)(i.event, text)) {
           if (!i.isVisible) {
             i.marker.setMap(_this3.map);
             i.isVisible = true;
@@ -24631,7 +24631,7 @@ var MapContainer = function () {
       if (event == null) return;
       for (var index = 0; index < this.items.length; index++) {
         if (this.items[index].event == event) {
-          var render;
+          var _render;
 
           var _ret = function () {
             //TODO only create this once per event!
@@ -24648,9 +24648,14 @@ var MapContainer = function () {
             _this4.activeEvent = { infoWindow: infoWindow, event: _this4.items[index].event };
             _this4.map.panTo(_this4.items[index].marker.getPosition());
 
-            render = function render() {
+            _render = function render(retries, max) {
               var el = document.getElementById(elementId);
-              if (!el) return false;
+              if (!el) {
+                if (retries++ < max) setTimeout(function () {
+                  return _render(retries, max);
+                }, 100);
+                return;
+              };
               _reactDom2.default.render(_react2.default.createElement(_SportiveInfoWindow2.default, { item: _this4.items[index].event }), el);
               return true;
             };
@@ -24658,7 +24663,7 @@ var MapContainer = function () {
             //Chrome/maps not ready on very first item...
 
 
-            if (!render()) setTimeout(render, 100);
+            _render(0, 3);
 
             return {
               v: undefined
@@ -24750,11 +24755,111 @@ var SideBarLinkContainer = (0, _reactRedux.connect)(mapStateToProps, mapDispatch
 exports.default = SideBarLinkContainer;
 
 },{"../actions":181,"../components/SideBarLink":186,"react-redux":35}],193:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _index = require('../actions/index');
+
+var _moment = require('moment');
+
+var _moment2 = _interopRequireDefault(_moment);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/*
+
+function processAjaxData(response, urlPath){
+     document.getElementById("content").innerHTML = response.html;
+     document.title = response.pageTitle;
+     window.history.pushState({"html":response.html,"pageTitle":response.pageTitle},"", urlPath);
+ }
+ 
+ 
+ window.onpopstate = function(e){
+    if(e.state){
+        document.getElementById("content").innerHTML = e.state.html;
+        document.title = e.state.pageTitle;
+    }
+};
+
+*/
+
+var UrlPathContainer = function () {
+	function UrlPathContainer(store, region) {
+		_classCallCheck(this, UrlPathContainer);
+
+		this.store = store;
+		this.region = region;
+	}
+
+	_createClass(UrlPathContainer, [{
+		key: 'init',
+		value: function init() {
+			var _this = this;
+
+			var pathParts = window.location.pathname.split("/");
+			if (pathParts.length > 0 && pathParts[0] == "") pathParts.shift();
+			if (pathParts.length >= 2 && pathParts[0].toLowerCase() == "uk") {
+				if (pathParts[1].toLowerCase() == "e" && pathParts.length == 4) {
+					var date = (0, _moment2.default)(pathParts[2], "YYYY-MM-DD");
+					if (date.isValid()) {
+						var name = pathParts[3];
+						var events = this.store.getState().events;
+
+						for (var index = 0; index < events.length; index++) {
+							var element = events[index];
+							if ((0, _moment2.default)(element.date).startOf('day').isSame(date) && name == element.namePath) {
+
+								this.store.dispatch((0, _index.setDateFilter)(new _index.DateFilter(9999, 9999, 9999, function (e) {
+									return e == element;
+								})));
+								this.store.dispatch((0, _index.setSelectedEvent)(element));
+
+								break;
+							}
+						}
+					}
+				}
+			}
+			this.store.subscribe(function () {
+				_this.buildUrl(_this.store.getState());
+			});
+		}
+	}, {
+		key: 'buildUrl',
+		value: function buildUrl(state) {
+			if (state.selectedEvent) {
+				var date = (0, _moment2.default)(state.selectedEvent.date).format('YYYY-MM-DD');
+				var path = "/" + this.region + "/e/" + date + "/" + state.selectedEvent.namePath;
+				window.history.pushState({}, null, path);
+			} else {
+				window.history.pushState({}, null, "/");
+			}
+		}
+	}]);
+
+	return UrlPathContainer;
+}();
+
+exports.default = UrlPathContainer;
+
+},{"../actions/index":181,"moment":31}],194:[function(require,module,exports){
 "use strict";
 
 var _MapContainer = require('./containers/MapContainer');
 
 var _MapContainer2 = _interopRequireDefault(_MapContainer);
+
+var _UrlPathContainer = require('./containers/UrlPathContainer');
+
+var _UrlPathContainer2 = _interopRequireDefault(_UrlPathContainer);
 
 var _redux = require('redux');
 
@@ -24774,8 +24879,39 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 
 
+/*
+function selectEventFromUrl(events, dispatcher) {
+    let pathParts = window.location.pathname.split("/");
+    if (pathParts.length > 0 && pathParts[0] == "")
+        pathParts.shift();
+    if (pathParts.length >= 2 && pathParts[0].toLowerCase() == "uk") {
+        if (pathParts[1].toLowerCase() == "e" && pathParts.length == 4) {
+            var date = moment(pathParts[2], "YYYY-MM-DD");
+            if (date.isValid())
+            {
+                var name = pathParts[3];
+                
+                for (var index = 0; index < events.length; index++) {
+                    var element = events[index];
+                    if (moment(element.date).startOf('day').isSame(date)
+                        && name == element.namePath) {
+                                                                        
+                        dispatcher(setDateFilter(new DateFilter(9999, 9999, 9999, e => e == element)))
+                        dispatcher(setSelectedEvent(element))
+                        
+                        return;                            
+                    }                    
+                }                                        
+            }                
+        }            
+    }        
+}
+*/
+
 function initMap() {
-    $.post("api/list/uk").done(function (data) {
+    var region = "uk";
+
+    $.post("/api/list/" + region).done(function (data) {
         var appData = {
             events: data
         };
@@ -24787,6 +24923,7 @@ function initMap() {
             { store: store },
             React.createElement(_App2.default, null)
         ), document.getElementById('root'));
+
         var mapContainer = new _MapContainer2.default("googleMap", { lat: 54.0684078, lng: -2.0086898 }, store.getState().events, store.dispatch);
         mapContainer.setFilter(store.getState().dateFilter);
 
@@ -24795,13 +24932,16 @@ function initMap() {
             console.log(s);
             mapContainer.focus(s.selectedEvent);
             mapContainer.setFilter(s.dateFilter, s.searchText);
+            if (s.selectedEvent) document.title = "Sportive Map - " + s.selectedEvent.name;else document.title = "Sportive Map";
         });
+
+        new _UrlPathContainer2.default(store, region).init();
     });
 }
 
 google.maps.event.addDomListener(window, 'load', initMap);
 
-},{"./components/App":182,"./containers/MapContainer":190,"./reducers/index":195,"react":170,"react-dom":32,"react-redux":35,"redux":176}],194:[function(require,module,exports){
+},{"./components/App":182,"./containers/MapContainer":190,"./containers/UrlPathContainer":193,"./reducers/index":196,"react":170,"react-dom":32,"react-redux":35,"redux":176}],195:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -24824,7 +24964,7 @@ var dateFilter = function dateFilter() {
 
 exports.default = dateFilter;
 
-},{"../actions/index":181}],195:[function(require,module,exports){
+},{"../actions/index":181}],196:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -24918,4 +25058,4 @@ var app = (0, _redux.combineReducers)({
 
 exports.default = app;
 
-},{"../actions/index":181,"./dateFilter":194,"redux":176}]},{},[193]);
+},{"../actions/index":181,"./dateFilter":195,"redux":176}]},{},[194]);
