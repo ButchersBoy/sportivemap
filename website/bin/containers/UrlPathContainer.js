@@ -1,23 +1,5 @@
-import { setSelectedEvent, setDateFilter, DateFilter } from '../actions/index'
+import { setSelectedEvent, setDateFilter, setSearchText, DateFilter, DateFilterKinds } from '../actions/index'
 import moment from 'moment'
-
-/*
-
-function processAjaxData(response, urlPath){
-     document.getElementById("content").innerHTML = response.html;
-     document.title = response.pageTitle;
-     window.history.pushState({"html":response.html,"pageTitle":response.pageTitle},"", urlPath);
- }
- 
- 
- window.onpopstate = function(e){
-    if(e.state){
-        document.getElementById("content").innerHTML = e.state.html;
-        document.title = e.state.pageTitle;
-    }
-};
-
-*/
 
 export default class UrlPathContainer {
 	constructor(store, region) {
@@ -49,6 +31,16 @@ export default class UrlPathContainer {
 					}                                        
 				}                
 			}            
+			else if (pathParts[1].toLowerCase() == "f" && pathParts.length >= 3) {
+				let dateFilterName = pathParts[2].toUpperCase()
+				let dateFilterMatches = DateFilterKinds.filter(df => df.short == dateFilterName)
+				if (dateFilterMatches.length > 0) {
+					this.store.dispatch(setDateFilter(dateFilterMatches[0]))
+				}												
+				if (pathParts.length > 3) {
+					this.store.dispatch(setSearchText(pathParts[3]))
+				}
+			}
 		}
 		this.store.subscribe(() => {
 			this.buildUrl(this.store.getState())
@@ -62,8 +54,16 @@ export default class UrlPathContainer {
 			window.history.pushState({}, null, path)
 		}				
 		else
-		{			
-			window.history.pushState({}, null, "/")
+		{	
+			let code = DateFilterKinds[DateFilterKinds.length - 1].short
+			if (state.dateFilter)
+				code = state.dateFilter.short
+				
+			let path = "/" + this.region + "/f/" + code
+			if (state.searchText)
+				path += "/" + state.searchText  
+			
+			window.history.pushState({}, null, path)
 		}				
 	}	
 }

@@ -24773,24 +24773,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-/*
-
-function processAjaxData(response, urlPath){
-     document.getElementById("content").innerHTML = response.html;
-     document.title = response.pageTitle;
-     window.history.pushState({"html":response.html,"pageTitle":response.pageTitle},"", urlPath);
- }
- 
- 
- window.onpopstate = function(e){
-    if(e.state){
-        document.getElementById("content").innerHTML = e.state.html;
-        document.title = e.state.pageTitle;
-    }
-};
-
-*/
-
 var UrlPathContainer = function () {
 	function UrlPathContainer(store, region) {
 		_classCallCheck(this, UrlPathContainer);
@@ -24826,6 +24808,19 @@ var UrlPathContainer = function () {
 							}
 						}
 					}
+				} else if (pathParts[1].toLowerCase() == "f" && pathParts.length >= 3) {
+					(function () {
+						var dateFilterName = pathParts[2].toUpperCase();
+						var dateFilterMatches = _index.DateFilterKinds.filter(function (df) {
+							return df.short == dateFilterName;
+						});
+						if (dateFilterMatches.length > 0) {
+							_this.store.dispatch((0, _index.setDateFilter)(dateFilterMatches[0]));
+						}
+						if (pathParts.length > 3) {
+							_this.store.dispatch((0, _index.setSearchText)(pathParts[3]));
+						}
+					})();
 				}
 			}
 			this.store.subscribe(function () {
@@ -24840,7 +24835,13 @@ var UrlPathContainer = function () {
 				var path = "/" + this.region + "/e/" + date + "/" + state.selectedEvent.namePath;
 				window.history.pushState({}, null, path);
 			} else {
-				window.history.pushState({}, null, "/");
+				var code = _index.DateFilterKinds[_index.DateFilterKinds.length - 1].short;
+				if (state.dateFilter) code = state.dateFilter.short;
+
+				var path = "/" + this.region + "/f/" + code;
+				if (state.searchText) path += "/" + state.searchText;
+
+				window.history.pushState({}, null, path);
 			}
 		}
 	}]);
@@ -24878,35 +24879,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var React = require('react');
 var ReactDOM = require('react-dom');
 
-
-/*
-function selectEventFromUrl(events, dispatcher) {
-    let pathParts = window.location.pathname.split("/");
-    if (pathParts.length > 0 && pathParts[0] == "")
-        pathParts.shift();
-    if (pathParts.length >= 2 && pathParts[0].toLowerCase() == "uk") {
-        if (pathParts[1].toLowerCase() == "e" && pathParts.length == 4) {
-            var date = moment(pathParts[2], "YYYY-MM-DD");
-            if (date.isValid())
-            {
-                var name = pathParts[3];
-                
-                for (var index = 0; index < events.length; index++) {
-                    var element = events[index];
-                    if (moment(element.date).startOf('day').isSame(date)
-                        && name == element.namePath) {
-                                                                        
-                        dispatcher(setDateFilter(new DateFilter(9999, 9999, 9999, e => e == element)))
-                        dispatcher(setSelectedEvent(element))
-                        
-                        return;                            
-                    }                    
-                }                                        
-            }                
-        }            
-    }        
-}
-*/
 
 function initMap() {
     var region = "uk";

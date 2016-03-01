@@ -9,35 +9,6 @@ import { Provider } from 'react-redux'
 import app from './reducers/index';
 import App from './components/App'
 
-/*
-function selectEventFromUrl(events, dispatcher) {
-    let pathParts = window.location.pathname.split("/");
-    if (pathParts.length > 0 && pathParts[0] == "")
-        pathParts.shift();
-    if (pathParts.length >= 2 && pathParts[0].toLowerCase() == "uk") {
-        if (pathParts[1].toLowerCase() == "e" && pathParts.length == 4) {
-            var date = moment(pathParts[2], "YYYY-MM-DD");
-            if (date.isValid())
-            {
-                var name = pathParts[3];
-                
-                for (var index = 0; index < events.length; index++) {
-                    var element = events[index];
-                    if (moment(element.date).startOf('day').isSame(date)
-                        && name == element.namePath) {
-                                                                        
-                        dispatcher(setDateFilter(new DateFilter(9999, 9999, 9999, e => e == element)))
-                        dispatcher(setSelectedEvent(element))
-                        
-                        return;                            
-                    }                    
-                }                                        
-            }                
-        }            
-    }        
-}
-*/
-
 function initMap() {
     let region = "uk"
     
