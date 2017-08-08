@@ -22,7 +22,7 @@ export default class MapContainer {
         rotateControl:true
       };            
       this.map=new google.maps.Map(document.getElementById(elementId), mapProps);
-      this.items = events.map((e, i) => {
+      this.items = events.filter(ev => ev.geometryLocation).map((e, i) => {
         return { 
           event : e, 
           index : i,           

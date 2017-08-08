@@ -24572,7 +24572,9 @@ var MapContainer = function () {
       rotateControl: true
     };
     this.map = new google.maps.Map(document.getElementById(elementId), mapProps);
-    this.items = events.map(function (e, i) {
+    this.items = events.filter(function (ev) {
+      return ev.geometryLocation;
+    }).map(function (e, i) {
       return {
         event: e,
         index: i,
