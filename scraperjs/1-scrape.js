@@ -10,6 +10,8 @@ var readline = require('readline');
 var jsdom = require("jsdom");
 var request = require("request");
 var Promise = require("bluebird");
+var urlHelper = require("./urlHelper.js")
+
 Promise.promisifyAll(require("request"));
 
 String.prototype.clean = function() {
@@ -22,7 +24,7 @@ var allEvents = new Array();
 
 function manageUkCyclingEvents(allEvents, then) {
 	request
-		.getAsync('http://www.ukcyclingevents.co.uk/events/category/road')
+		.getAsync(urlHelper.addProxy('http://www.ukcyclingevents.co.uk/events/category/road'))
 		.then(function(response){
 			jsdom.env({
 						html : response.body,
@@ -46,7 +48,7 @@ function manageUkCyclingEvents(allEvents, then) {
 
 function manageBritishCyclingEvents(intoEvents, then) {
     	request
-		.getAsync('https://www.britishcycling.org.uk/events?search_type=upcomingevents&zuv_bc_event_filter_id[]=5&resultsperpage=1000')
+		.getAsync(urlHelper.addProxy('https://www.britishcycling.org.uk/events?search_type=upcomingevents&zuv_bc_event_filter_id[]=5&resultsperpage=1000'))
 		.then(function(response){
 			jsdom.env({
 						html : response.body,
@@ -90,7 +92,7 @@ Event.prototype.toJSON__ = function() {
 
 var requestPromise = Promise.method(function(url) {
 	console.log("get " + url);
-	return request.getAsync(url).then(function(response) {
+	return request.getAsync(urlHelper.addProxy(url)).then(function(response) {
 		console.log("received " + url);
 		return response;
 	});
@@ -118,15 +120,15 @@ function parseUkCyclingEvent(html, sourceUrl, intoEvents) {
 				console.log(err)
 			else			
 			{	
-				var name = window.$("body>div:nth-child(4)>div:nth-child(3)>div:nth-child(1)>div:nth-child(1)>div:nth-child(1)>h3").text().clean();
+				var name = window.$("div.span8>div:nth-child(1)>div>h3").text().clean();
 				var event;
 				if (name != "")
 				{
 					event = new Event(
 						name,
-						window.$('dl.event-details dt:contains("Date") ~ dd:first').text().clean(),
+						window.$('body>div:nth-child(3)>div:nth-child(3)>div:nth-child(2)>div:nth-child(2)>dl>dd:nth-child(2)').text().clean(),
 						"Road",
-						window.$('dl.event-details dt:contains("Venue") ~ dd:first').text().clean(),
+						window.$('body>div:nth-child(3)>div:nth-child(3)>div:nth-child(2)>div:nth-child(2)>dl>dd:nth-child(8)').text().clean(),
 						sourceUrl
 						);
 

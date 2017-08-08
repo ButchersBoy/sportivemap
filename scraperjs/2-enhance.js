@@ -2,6 +2,7 @@
 
 var fs = require("fs");
 var request = require("request")
+var urlHelper = require("./urlHelper.js")
 var Promise = require("bluebird");
 Promise.promisifyAll(require("request"));
 
@@ -107,15 +108,22 @@ function getNextGeoLoc(events, index, failedEventItems, resolve) {
         urlSuffix = events[index].locationSummary.replace(/\n/g, ",");
     var geoCodeUrl = urlPrefix.concat(urlSuffix);	
 
-	request.getAsync(geoCodeUrl)
+	request.getAsync(urlHelper.addProxy(geoCodeUrl))
 		.then(function(response) {
 
-			if (!response.body) {                
+			if (!response.body || response.body == "") {                
 				logGeoLocationFail(events[index], geoCodeUrl, failedEventItems);
 				return;
 			};                            
 
-			var geo = JSON.parse(response.body);
+			var geo
+			try
+			{
+				geo = JSON.parse(response.body);
+			} catch (err) {
+				console.log("Unable to parse geoloc result of " + response.body)
+				return				
+			}			
 
 			if (!geo.results || geo.results.length == 0) {
                 console.log(response.body);
