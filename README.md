@@ -1,53 +1,13 @@
 # sportivemap
 
-## URL nodes
+This is just a demo app with me playing around with a few web techs:
 
+* node.js
+* React
+* Redux
+* Google Maps API
+* Semantic UI
 
-www.sportivemap.com/uk
-www.sportivemap.com/uk/e/2017-05-25/Wiggle-New-Forest-Spring
-www.sportivemap.com/uk/f/2017-05-25/
-www.sportivemap.com/uk/f/1W/
-www.sportivemap.com/uk/f/1W/Wiggle
-www.sportivemap.com/uk/f/January
+There's no database; data is scraped and dumped into a JSON file whenever I can be bothered.  Most of it was written a while back so missing out on some new React features such as stateless components.
 
-
-www.sportivemap.com/usa
-www.sportivemap.com/usa/e/2017-05-25/Wiggle-New-Forest-Spring
-www.sportivemap.com/usa/f/2017-05-25/
-www.sportivemap.com/usa/f/1W/
-www.sportivemap.com/usa/f/1W/Wiggle
-www.sportivemap.com/usa/f/January
-
-www.sportivemap.com/modifications
-
-
-
-
-
-[01/03/2016 09:04] Martin MASSER: 
-NOTICE:This instant message conversation will be recorded, archived and may be subject to monitoring and review in the future.
-
- Fred Whitton Challenge
-[01/03/2016 09:08] Martin MASSER: 
-2016 Great Weston Ride
-
-Sunday, July 17th 2016
-
-Ashton Park, Monkstown, Co. Dublin, Ireland
-[01/03/2016 09:15] Martin MASSER: 
-Tour of the Meon Valley
-Sunday, May 22nd 2016
-Wickham Community Centre, Mill Ln, Wickham, Fareham, Hampshire PO17 5AL, UK- broken link
-[01/03/2016 09:28] Martin MASSER: 
-NOTICE:This instant message conversation will be recorded, archived and may be subject to monitoring and review in the future.
-
- cancelled - text = red
-
-
-search in Capitals fails
-
-
-
-
- http://events.cyclingweekly.co.uk/event/map
- Dulwich cycling weekly
+You can see the website in action at: www.sportivemap.com
